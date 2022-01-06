@@ -1,0 +1,66 @@
+/* purgecss start ignore */
+@tailwind base;
+@tailwind components;
+/* purgecss end ignore */
+
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: GT Pressura;
+    src: url("/GT-Pressura-Mono-Regular.woff") format("woff");
+    font-weight: normal;
+  }
+
+  @font-face {
+    font-family: GT Pressura;
+    src: url("/GT-Pressura-Mono-Bold.woff") format("woff");
+    font-weight: 700;
+  }
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-ligatures: no-contextual;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: #FCFCFC;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* remove blue outline on focus */
+input:focus {
+  outline:none;
+}
+
+.heroicon-sw-0\.5 path {
+  stroke-width: 0.5 !important;
+}
+.heroicon-sw-1 path {
+  stroke-width: 1 !important;
+}
+.heroicon-sw-1\.2 path {
+  stroke-width: 1.2 !important;
+}
+.heroicon-sw-1\.5 path {
+  stroke-width: 1.5 !important;
+}
+.heroicon-sw-1\.75 path {
+  stroke-width: 1.75 !important;
+}
+.heroicon-sw-2 path {
+  stroke-width: 2 !important;
+}
+.heroicon-sw-3 path {
+  stroke-width: 3 !important;
+}
