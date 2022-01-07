@@ -24,7 +24,12 @@ const ToastContainer = ({ toasts }) => {
     ? createPortal(
         <div className="z-50 absolute top-0 right-0">
           {transitions((styles, item: ToastData) => (
-            <Toast id={item.id} variant={item.variant} style={styles}>
+            <Toast
+              id={item.id}
+              variant={item.variant}
+              disappears={item.disappears}
+              style={styles}
+            >
               {item.content}
             </Toast>
           ))}

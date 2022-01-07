@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { WyvernV2 } from "@reservoir0x/sdk";
 import { Interface } from "ethers/lib/utils";
-import { Form, Formik, FormikHelpers } from "formik";
+import { Form, Formik } from "formik";
 import CurrencyInput from "react-currency-input-field";
 import { Contract, ethers } from "ethers";
 
@@ -66,10 +66,10 @@ export default function ListModal({
     ]),
   );
   const { account } = useWallet();
-  const { addToast } = useToast();
+  const { addToast, addTxMiningToast } = useToast();
   const [userProxy, setUserProxy] = useState(ethers.constants.AddressZero);
   const [ensTransfersApproved, setEnsTransfersApproved] = useState(false);
-  const [mining, setMining] = useState(false);
+  const [isMining, setIsMining] = useState(false);
 
   // check proxy status and transfer approval
   useEffect(() => {
@@ -101,46 +101,57 @@ export default function ListModal({
 
   const handleRegisterProxy = async () => {
     try {
-      setMining(true);
+      setIsMining(true);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const { wait } = await proxyRegistryContract
+      const { wait, hash } = await proxyRegistryContract
         .connect(provider.getSigner())
         .registerProxy();
+      addTxMiningToast(hash);
       await wait();
-      addToast(<span>proxy registered with opensea</span>, "success");
+      addToast({
+        content: <span>proxy registered with opensea</span>,
+        variant: "success",
+      });
       const userProxy = await proxyRegistryContract
         .connect(provider.getSigner())
         .proxies(account);
-      setMining(false);
+      setIsMining(false);
       setUserProxy(userProxy);
     } catch (error) {
-      setMining(false);
-      addToast(<span>something went wrong, try again</span>, "danger");
+      setIsMining(false);
+      addToast({
+        content: <span>something went wrong, try again</span>,
+        variant: "danger",
+      });
     }
   };
 
   const handleApproveTransfers = async () => {
     try {
-      setMining(true);
+      setIsMining(true);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const { wait } = await ensContract
+      const { wait, hash } = await ensContract
         .connect(provider.getSigner())
         .setApprovalForAll(userProxy, true);
+      addTxMiningToast(hash);
       await wait();
-      setMining(false);
+      setIsMining(false);
       setEnsTransfersApproved(true);
-      addToast(<span>transfers approved for opensea</span>, "success");
+      addToast({
+        content: <span>transfers approved for opensea</span>,
+        variant: "success",
+      });
     } catch (error) {
-      setMining(false);
+      setIsMining(false);
       // TODO: error handling
-      addToast(<span>something went wrong, try again</span>, "danger");
+      addToast({
+        content: <span>something went wrong, try again</span>,
+        variant: "danger",
+      });
     }
   };
 
-  const onSubmit = async (
-    values: Values,
-    { setSubmitting }: FormikHelpers<Values>,
-  ) => {
+  const onSubmit = async (values: Values) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
     // construct order params
@@ -170,7 +181,7 @@ export default function ListModal({
     );
 
     try {
-      setMining(true);
+      setIsMining(true);
       // sign order
       await sellOrder.sign(provider.getSigner() as any);
 
@@ -183,21 +194,26 @@ export default function ListModal({
           },
         ],
       });
-      setMining(false);
+      setIsMining(false);
       onSuccess();
 
-      addToast(
-        <span className="flex items-center">
-          {currentPrice ? "lowered price to" : "listed for"}
-          <EthIcon className="inline-block w-2 ml-1 mr-1" />
-          <span className="font-mono tracking-tighter">{values.amount}</span>
-        </span>,
-        "success",
-      );
+      addToast({
+        content: (
+          <span className="flex items-center">
+            {currentPrice ? "lowered price to" : "listed for"}
+            <EthIcon className="inline-block w-2 ml-1 mr-1" />
+            <span className="font-mono tracking-tighter">{values.amount}</span>
+          </span>
+        ),
+        variant: "success",
+      });
       onClose();
     } catch (error) {
-      setMining(false);
-      addToast(<span>something went wrong, try again</span>, "danger");
+      setIsMining(false);
+      addToast({
+        content: <span>something went wrong, try again</span>,
+        variant: "danger",
+      });
     }
   };
 
@@ -218,7 +234,7 @@ export default function ListModal({
           validateOnChange={false}
           validateOnBlur={false}
         >
-          {({ errors, handleChange, setFieldError, values, setFieldValue }) => (
+          {({ errors, setFieldError, values, setFieldValue }) => (
             <Form className="w-full flex flex-col self-center h-4/5 px-6 pt-12 pb-8 gap-y-4">
               <h1 className="text-3xl font-medium tracking-tight font-pressura">
                 {ens}
@@ -319,14 +335,14 @@ export default function ListModal({
               </div>
               {userProxy !== ethers.constants.AddressZero &&
                 ensTransfersApproved && (
-                  <Button variant="primary" loading={mining} type="submit">
+                  <Button variant="primary" loading={isMining} type="submit">
                     {currentPrice ? "lower price" : "list for sale"}
                   </Button>
                 )}
               {userProxy === ethers.constants.AddressZero && (
                 <Button
                   variant="primary"
-                  loading={mining}
+                  loading={isMining}
                   onClick={handleRegisterProxy}
                 >
                   register opensea proxy
@@ -336,7 +352,7 @@ export default function ListModal({
                 !ensTransfersApproved && (
                   <Button
                     variant="primary"
-                    loading={mining}
+                    loading={isMining}
                     onClick={handleApproveTransfers}
                   >
                     approve opensea transfers

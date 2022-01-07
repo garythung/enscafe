@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Formik, FormikHelpers } from "formik";
+import { Form, Formik } from "formik";
 import DatePicker from "react-datepicker";
 import { WyvernV2 } from "@reservoir0x/sdk";
 import { Contract, ethers } from "ethers";
@@ -57,9 +57,9 @@ export default function OfferModal({
 }: Props) {
   const wethContract = new Contract(getContract("weth"), ERC20);
   const { account } = useWallet();
-  const { addToast } = useToast();
+  const { addToast, addTxMiningToast } = useToast();
   const [wethAllowance, setWethAllowance] = useState(ethers.BigNumber.from(0));
-  const [mining, setMining] = useState(false);
+  const [isMining, setIsMining] = useState(false);
 
   // check weth allowance
   useEffect(() => {
@@ -85,28 +85,33 @@ export default function OfferModal({
 
   const handleWethAllowance = async () => {
     try {
-      setMining(true);
+      setIsMining(true);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const { wait } = await wethContract
+      const { wait, hash } = await wethContract
         .connect(provider.getSigner())
         .approve(
           getContract("openseaTokenTransferProxy"),
           ethers.constants.MaxUint256.toString(),
         );
+
+      addTxMiningToast(hash);
       await wait();
-      addToast(<span>max weth allowance granted to opensea</span>, "success");
-      setMining(false);
+      addToast({
+        content: <span>max weth allowance granted to opensea</span>,
+        variant: "success",
+      });
+      setIsMining(false);
       setWethAllowance(ethers.constants.MaxUint256);
     } catch (error) {
-      setMining(false);
-      addToast(<span>something went wrong, try again</span>, "danger");
+      setIsMining(false);
+      addToast({
+        content: <span>something went wrong, try again</span>,
+        variant: "danger",
+      });
     }
   };
 
-  const onSubmit = async (
-    values: Values,
-    { setSubmitting }: FormikHelpers<Values>,
-  ) => {
+  const onSubmit = async (values: Values) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
     // construct order params
@@ -135,7 +140,7 @@ export default function OfferModal({
     );
 
     try {
-      setMining(true);
+      setIsMining(true);
       // sign order
       await sellOrder.sign(provider.getSigner() as any);
 
@@ -148,21 +153,26 @@ export default function OfferModal({
           },
         ],
       });
-      setMining(false);
+      setIsMining(false);
       onSuccess();
 
-      addToast(
-        <span className="flex items-center">
-          offered
-          <EthIcon className="inline-block w-2 ml-1 mr-1" />
-          <span className="font-mono tracking-tighter">{values.amount}</span>
-        </span>,
-        "success",
-      );
+      addToast({
+        content: (
+          <span className="flex items-center">
+            offered
+            <EthIcon className="inline-block w-2 ml-1 mr-1" />
+            <span className="font-mono tracking-tighter">{values.amount}</span>
+          </span>
+        ),
+        variant: "success",
+      });
       onClose();
     } catch (error) {
-      setMining(false);
-      addToast(<span>something went wrong, try again</span>, "danger");
+      setIsMining(false);
+      addToast({
+        content: <span>something went wrong, try again</span>,
+        variant: "danger",
+      });
     }
   };
 
@@ -283,14 +293,14 @@ export default function OfferModal({
                 )}
               </div>
               {wethAllowance.eq(ethers.constants.MaxUint256) && (
-                <Button variant="primary" loading={mining} type="submit">
+                <Button variant="primary" loading={isMining} type="submit">
                   send offer
                 </Button>
               )}
               {!wethAllowance.eq(ethers.constants.MaxUint256) && (
                 <Button
                   variant="primary"
-                  loading={mining}
+                  loading={isMining}
                   onClick={handleWethAllowance}
                 >
                   let opensea use your weth

@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { WyvernV2 } from "@reservoir0x/sdk";
+import { useState } from "react";
 
 import Button from "~/components/Button";
 import useWallet from "~/hooks/useWallet";
@@ -23,7 +24,12 @@ export default function BuyButton({
   onSuccess,
 }: Props) {
   const { account } = useWallet();
-  const { addToast } = useToast();
+  const { addToast, addTxMiningToast } = useToast();
+  const [isMining, setIsMining] = useState(false);
+
+  const test = () => {
+    addTxMiningToast("abc");
+  };
 
   const onClick = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -31,40 +37,52 @@ export default function BuyButton({
     const sellOrderResponse = await api.get(
       `${getIndexer()}/orders?side=sell&hash=${orderHash}`,
     );
-
     const sellOrder = new WyvernV2.Order(
       getChainId(),
       sellOrderResponse.data.orders[0].rawData,
     );
-
     const takerBuyOrder = sellOrder.buildMatching(account);
     const exchange = new WyvernV2.Exchange(getChainId());
-    const { wait } = await exchange.match(
-      provider.getSigner() as any,
-      takerBuyOrder,
-      sellOrder,
-    );
 
-    await wait();
-    onSuccess();
+    try {
+      setIsMining(true);
+      const { wait, hash } = await exchange.match(
+        provider.getSigner() as any,
+        takerBuyOrder,
+        sellOrder,
+      );
+      addTxMiningToast(hash);
+      await wait();
+      onSuccess();
+      setIsMining(false);
 
-    addToast(
-      <span className="flex items-center">
-        bought for
-        <EthIcon className="inline-block w-2 ml-1 mr-1" />
-        <span className="font-mono tracking-tighter">
-          {ethers.utils.formatUnits(
-            sellOrderResponse.data.orders[0].rawData.basePrice,
-          )}
-        </span>
-      </span>,
-      "success",
-    );
+      addToast({
+        content: (
+          <span className="flex items-center">
+            bought for
+            <EthIcon className="inline-block w-2 ml-1 mr-1" />
+            <span className="font-mono tracking-tighter">
+              {ethers.utils.formatUnits(
+                sellOrderResponse.data.orders[0].rawData.basePrice,
+              )}
+            </span>
+          </span>
+        ),
+        variant: "success",
+      });
+    } catch (error) {
+      setIsMining(false);
+      addToast({
+        content: <span>something went wrong, try again</span>,
+        variant: "danger",
+      });
+    }
   };
 
   return (
     <>
-      <Button fluid variant="primary" onClick={onClick}>
+      <button onClick={test}>test</button>
+      <Button fluid variant="primary" onClick={onClick} loading={isMining}>
         buy now
       </Button>
     </>

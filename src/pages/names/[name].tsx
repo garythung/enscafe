@@ -25,6 +25,7 @@ import { useToast } from "~/contexts/ToastContext";
 import { getChainId } from "~/utils/networks";
 import { formatDateHuman, formatDateTimeHuman } from "~/utils/dates";
 import { simplifyAddress, isAddress } from "~/utils/addresses";
+import { getEtherscanLink } from "~/utils";
 
 type Status = "redirecting" | "ready";
 
@@ -72,27 +73,38 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
 
     const takerSellOrder = buyOrder.buildMatching(account);
     const exchange = new WyvernV2.Exchange(getChainId());
-    const { wait } = await exchange.match(
+    const { wait, hash } = await exchange.match(
       provider.getSigner() as any,
       buyOrder,
       takerSellOrder,
     );
 
+    addToast({
+      content: (
+        <div className="flex flex-col">
+          <span>transaction sent</span>
+          <a href={getEtherscanLink(hash, "transaction")}>view here</a>
+        </div>
+      ),
+      variant: "success",
+    });
     await wait();
     onAcceptSuccess();
 
-    addToast(
-      <span className="flex items-center">
-        sold for
-        <EthIcon className="inline-block w-2 ml-1 mr-1" />
-        <span className="font-mono tracking-tighter">
-          {ethers.utils.formatUnits(
-            buyOrderResponse.data.orders[0].rawData.basePrice,
-          )}
+    addToast({
+      content: (
+        <span className="flex items-center">
+          sold for
+          <EthIcon className="inline-block w-2 ml-1 mr-1" />
+          <span className="font-mono tracking-tighter">
+            {ethers.utils.formatUnits(
+              buyOrderResponse.data.orders[0].rawData.basePrice,
+            )}
+          </span>
         </span>
-      </span>,
-      "success",
-    );
+      ),
+      variant: "success",
+    });
   };
 
   const handleCancel = async (orderHash: string) => {
@@ -108,26 +120,37 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
     );
 
     const exchange = new WyvernV2.Exchange(getChainId());
-    const { wait } = await exchange.cancel(
+    const { wait, hash } = await exchange.cancel(
       provider.getSigner() as any,
       buyOrder,
     );
 
+    addToast({
+      content: (
+        <div className="flex flex-col">
+          <span>transaction sent</span>
+          <a href={getEtherscanLink(hash, "transaction")}>view here</a>
+        </div>
+      ),
+      variant: "success",
+    });
     await wait();
     onCancelSuccess();
 
-    addToast(
-      <span className="flex items-center">
-        canceled offer of
-        <EthIcon className="inline-block w-2 ml-1 mr-1" />
-        <span className="font-mono tracking-tighter">
-          {ethers.utils.formatUnits(
-            buyOrderResponse.data.orders[0].rawData.basePrice,
-          )}
+    addToast({
+      content: (
+        <span className="flex items-center">
+          canceled offer of
+          <EthIcon className="inline-block w-2 ml-1 mr-1" />
+          <span className="font-mono tracking-tighter">
+            {ethers.utils.formatUnits(
+              buyOrderResponse.data.orders[0].rawData.basePrice,
+            )}
+          </span>
         </span>
-      </span>,
-      "success",
-    );
+      ),
+      variant: "success",
+    });
   };
 
   return (

@@ -1,19 +1,22 @@
 import React, { useEffect } from "react";
 import { animated } from "react-spring";
+import { XIcon } from "@heroicons/react/outline";
 
 import { useToast } from "~/contexts/ToastContext";
 import type { ToastVariant } from "~/contexts/ToastContext";
 
 const Toast = ({
   children,
+  style,
   id,
   variant,
-  style,
+  disappears,
 }: {
   children: React.ReactNode;
+  style: any;
   id: number;
   variant: ToastVariant;
-  style: any;
+  disappears: boolean;
 }) => {
   const { removeToast } = useToast();
   let boxShadow = "-4px 4px 0px 0px";
@@ -26,6 +29,10 @@ const Toast = ({
   }
 
   useEffect(() => {
+    if (!disappears) {
+      return;
+    }
+
     const timer = setTimeout(() => {
       removeToast(id);
     }, 3000);
@@ -37,10 +44,18 @@ const Toast = ({
 
   return (
     <animated.div
-      className="mr-4 mt-8 relative px-3 py-2 border-1 border-black bg-white cursor-pointer"
-      onClick={() => removeToast(id)}
+      className="mr-8 mt-8 relative px-6 py-4 border-1 border-black bg-white"
       style={{ boxShadow, ...style }}
     >
+      <button
+        className="absolute right-1.5 top-1.5"
+        onClick={() => {
+          removeToast(id);
+        }}
+      >
+        <XIcon className="h-4 w-4 heroicon-sw-2" />
+      </button>
+
       {children}
     </animated.div>
   );
