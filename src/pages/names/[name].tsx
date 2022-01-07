@@ -131,23 +131,21 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
   };
 
   return (
-    <tr>
-      <td className="py-1.5 border-b-1 border-gray-500 border-dashed">
-        {simplifyAddress(order.maker, account, ensName)}
-      </td>
+    <tr className="border-b-1 border-gray-300">
+      <td className="py-2">{simplifyAddress(order.maker, account, ensName)}</td>
       <td
-        className="py-1.5 border-b-1 border-gray-500 border-dashed"
+        className="py-2"
         title={hasExpiration ? validUntilDate.toLocaleString() : undefined}
       >
         {hasExpiration && validUntilDate.toLocaleDateString()}
       </td>
-      <td className="py-1.5 border-b-1 border-gray-500 border-dashed">
+      <td className="py-2">
         <div className="flex items-center gap-x-1">
           <EthIcon className="inline-block w-2" />{" "}
           <span className="font-mono tracking-tighter">{order.value}</span>
         </div>
       </td>
-      <td className="py-1.5 border-b-1 border-gray-500 border-dashed">
+      <td className="py-2">
         {isMaker && (
           <Button
             onClick={() => handleCancel(order.hash)}
