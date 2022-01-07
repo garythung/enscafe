@@ -26,7 +26,7 @@ const Button = ({
   type = "button",
   ...props
 }: Props) => {
-  let classNames: string[] = [].concat(BASE_CLASSNAMES);
+  const classNames: string[] = [].concat(BASE_CLASSNAMES);
   if (fluid) {
     classNames.push("w-full");
   }

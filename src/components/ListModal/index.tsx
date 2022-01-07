@@ -320,7 +320,7 @@ export default function ListModal({
               {userProxy !== ethers.constants.AddressZero &&
                 ensTransfersApproved && (
                   <Button variant="primary" loading={mining} type="submit">
-                    {!!currentPrice ? "lower price" : "list for sale"}
+                    {currentPrice ? "lower price" : "list for sale"}
                   </Button>
                 )}
               {userProxy === ethers.constants.AddressZero && (

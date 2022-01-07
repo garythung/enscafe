@@ -32,7 +32,7 @@ export default function ListButton({
         onSuccess={onSuccess}
       />
       <Button fluid variant="secondary" onClick={onClick}>
-        {!!currentPrice ? "lower price" : "list for sale"}
+        {currentPrice ? "lower price" : "list for sale"}
       </Button>
     </>
   );

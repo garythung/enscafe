@@ -11,7 +11,7 @@ const BASE_CLASSNAMES = [
 ];
 
 const LinkButton = ({ fluid = false, children, href, ...props }) => {
-  let classNames: string[] = [].concat(BASE_CLASSNAMES);
+  const classNames: string[] = [].concat(BASE_CLASSNAMES);
   if (fluid) {
     classNames.push("w-full");
   }
