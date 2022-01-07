@@ -3,5 +3,5 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { NETWORKS } from "~/constants/networks";
 
 export const injectedConnector = new InjectedConnector({
-  supportedChainIds: [NETWORKS.Mainnet, NETWORKS.Rinkeby],
+  supportedChainIds: [NETWORKS[process.env.NEXT_PUBLIC_NETWORK]],
 });

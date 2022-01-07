@@ -14,7 +14,7 @@ const fetcher =
   };
 
 const useWallet = () => {
-  const { account, activate, active, deactivate, error, library } =
+  const { account, activate, active, deactivate, error, library, chainId } =
     useWeb3React();
   const { data: balance, mutate } = useSWR([account, "getBalance", "latest"], {
     fetcher: fetcher(library),
@@ -41,6 +41,7 @@ const useWallet = () => {
     deactivate,
     active,
     error,
+    chainId,
     library,
     provider: new ethers.providers.JsonRpcProvider(
       PROVIDERS[process.env.NEXT_PUBLIC_NETWORK],
