@@ -39,7 +39,7 @@ const Container = ({
   ens: string;
   children?: React.ReactNode;
 }) => (
-  <div className="flex flex-col items-center mt-8 md:mt-24 md:px-112">
+  <div className="flex flex-col items-center mt-8 md:px-112">
     <Head>
       <title key="title">ens cafe | {ens}</title>
       <meta property="og:title" content={ens} />
