@@ -54,7 +54,7 @@ export default function SellButton({
     addToast(
       <span className="flex items-center">
         sold for
-        <EthIcon className="inline-block w-2 ml-1 mr-0.5" />
+        <EthIcon className="inline-block w-2 ml-1 mr-1" />
         <span className="font-mono tracking-tighter">
           {ethers.utils.formatUnits(
             buyOrderResponse.data.orders[0].rawData.basePrice,
@@ -69,7 +69,7 @@ export default function SellButton({
     <>
       <Button fluid variant="primary" onClick={onClick}>
         sell now for
-        <span className="flex items-center gap-0.5 ml-1">
+        <span className="flex items-center gap-1 ml-1.5">
           <EthIcon className="inline-block w-2" />
           <span className="font-mono tracking-tighter">{amount}</span>
         </span>

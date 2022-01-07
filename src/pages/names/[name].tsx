@@ -84,7 +84,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
     addToast(
       <span className="flex items-center">
         sold for
-        <EthIcon className="inline-block w-2 ml-1 mr-0.5" />
+        <EthIcon className="inline-block w-2 ml-1 mr-1" />
         <span className="font-mono tracking-tighter">
           {ethers.utils.formatUnits(
             buyOrderResponse.data.orders[0].rawData.basePrice,
@@ -119,7 +119,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
     addToast(
       <span className="flex items-center">
         canceled offer of
-        <EthIcon className="inline-block w-2 ml-1 mr-0.5" />
+        <EthIcon className="inline-block w-2 ml-1 mr-1" />
         <span className="font-mono tracking-tighter">
           {ethers.utils.formatUnits(
             buyOrderResponse.data.orders[0].rawData.basePrice,
@@ -132,20 +132,22 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
 
   return (
     <tr>
-      <td className="py-1.5">
+      <td className="py-1.5 border-b-1 border-gray-500 border-dashed">
         {simplifyAddress(order.maker, account, ensName)}
       </td>
       <td
-        className="py-1.5"
+        className="py-1.5 border-b-1 border-gray-500 border-dashed"
         title={hasExpiration ? validUntilDate.toLocaleString() : undefined}
       >
         {hasExpiration && validUntilDate.toLocaleDateString()}
       </td>
-      <td className="flex items-center gap-0.5 py-1.5">
-        <EthIcon className="inline-block w-2" />{" "}
-        <span className="font-mono tracking-tighter">{order.value}</span>
+      <td className="py-1.5 border-b-1 border-gray-500 border-dashed">
+        <div className="flex items-center gap-x-1">
+          <EthIcon className="inline-block w-2" />{" "}
+          <span className="font-mono tracking-tighter">{order.value}</span>
+        </div>
       </td>
-      <td className="py-1.5">
+      <td className="py-1.5 border-b-1 border-gray-500 border-dashed">
         {isMaker && (
           <Button
             onClick={() => handleCancel(order.hash)}
@@ -446,7 +448,7 @@ export default function Name() {
       {!!buyOrders.length && (
         <div className="w-full mt-8">
           <h2 className="text-3xl font-medium">current offers</h2>
-          <table className="w-full">
+          <table className="w-full border-collapse">
             <thead className="border-b-1 border-t-1 border-black">
               <tr className="text-left">
                 <th>buyer</th>

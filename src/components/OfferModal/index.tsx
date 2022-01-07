@@ -154,7 +154,7 @@ export default function OfferModal({
       addToast(
         <span className="flex items-center">
           offered
-          <EthIcon className="inline-block w-2 ml-1 mr-0.5" />
+          <EthIcon className="inline-block w-2 ml-1 mr-1" />
           <span className="font-mono tracking-tighter">{values.amount}</span>
         </span>,
         "success",
