@@ -23,7 +23,7 @@ import ListButton from "~/components/ListButton";
 import { getContract } from "~/utils/contracts";
 import { useToast } from "~/contexts/ToastContext";
 import { getChainId } from "~/utils/networks";
-import { formatDateHuman } from "~/utils/dates";
+import { formatDateHuman, formatDateTimeHuman } from "~/utils/dates";
 import { simplifyAddress, isAddress } from "~/utils/addresses";
 
 type Status = "redirecting" | "ready";
@@ -344,14 +344,26 @@ export default function Name() {
             <p>owned by {simplifyAddress(owner, account, ownerENSName)}</p>
           </div>
 
-          {token?.market?.floorSell?.value && (
-            <span className="flex items-center gap-3">
-              <EthIcon className="inline-block w-4" />{" "}
-              <span className="text-4xl font-medium font-mono">
-                {token.market.floorSell.value}
-              </span>
-            </span>
-          )}
+          {token?.market?.floorSell?.value &&
+            (token.market.floorSell.validUntil === 0 ||
+              token.market.floorSell.validUntil < Date.now()) && (
+              <div className="flex flex-col items-end">
+                <span className="flex items-center gap-3">
+                  <EthIcon className="inline-block w-4" />{" "}
+                  <span className="text-4xl font-medium font-mono">
+                    {token.market.floorSell.value}
+                  </span>
+                </span>
+                {token.market.floorSell.validUntil !== 0 && (
+                  <span className="text-sm text-gray-500">
+                    on sale until{" "}
+                    {formatDateTimeHuman(
+                      token.market.floorSell.validUntil * 1000,
+                    )}
+                  </span>
+                )}
+              </div>
+            )}
         </div>
       )}
 
