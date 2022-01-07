@@ -137,7 +137,7 @@ export default function OfferModal({
     try {
       setMining(true);
       // sign order
-      await sellOrder.sign(provider.getSigner());
+      await sellOrder.sign(provider.getSigner() as any);
 
       // post order to Reservoir
       await api.post(`${getIndexer()}/orders`, {

@@ -40,7 +40,7 @@ export default function BuyButton({
     const takerBuyOrder = sellOrder.buildMatching(account);
     const exchange = new WyvernV2.Exchange(getChainId());
     const { wait } = await exchange.match(
-      provider.getSigner(),
+      provider.getSigner() as any,
       takerBuyOrder,
       sellOrder,
     );

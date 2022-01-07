@@ -16,6 +16,7 @@ import { getIndexer } from "~/utils/indexers";
 import { useToast } from "~/contexts/ToastContext";
 import EthIcon from "~/components/EthIcon";
 import Modal from "~/components/Modal";
+import ERC721 from "~/abis/ERC721.json";
 
 type Props = {
   isOpen: boolean;
@@ -56,15 +57,7 @@ export default function ListModal({
   currentPrice,
   onSuccess,
 }: Props) {
-  const ensContract = new Contract(
-    getContract("ens"),
-    new Interface([
-      "function ownerOf(uint256 tokenId) view returns (address)",
-      "function getApproved(uint256 tokenId) view returns (address)",
-      "function isApprovedForAll(address owner, address operator) view returns (bool)",
-      "function setApprovalForAll(address operator, bool approved)",
-    ]),
-  );
+  const ensContract = new Contract(getContract("ens"), ERC721);
   const proxyRegistryContract = new Contract(
     getContract("openseaProxyRegistry"),
     new Interface([
@@ -179,7 +172,7 @@ export default function ListModal({
     try {
       setMining(true);
       // sign order
-      await sellOrder.sign(provider.getSigner());
+      await sellOrder.sign(provider.getSigner() as any);
 
       // post order to Reservoir
       await api.post(`${getIndexer()}/orders`, {

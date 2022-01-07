@@ -5,7 +5,7 @@ type Values = {
 };
 
 const Input = ({ label, helpText, ...props }) => {
-  const [field] = useField(props);
+  const [field] = useField(props as any);
 
   const onChange = (e) => {
     field.onChange(e);

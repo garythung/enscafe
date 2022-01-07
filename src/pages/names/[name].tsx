@@ -73,7 +73,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
     const takerSellOrder = buyOrder.buildMatching(account);
     const exchange = new WyvernV2.Exchange(getChainId());
     const { wait } = await exchange.match(
-      provider.getSigner(),
+      provider.getSigner() as any,
       buyOrder,
       takerSellOrder,
     );
@@ -108,7 +108,10 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
     );
 
     const exchange = new WyvernV2.Exchange(getChainId());
-    const { wait } = await exchange.cancel(provider.getSigner(), buyOrder);
+    const { wait } = await exchange.cancel(
+      provider.getSigner() as any,
+      buyOrder,
+    );
 
     await wait();
     onCancelSuccess();
@@ -379,6 +382,12 @@ export default function Name() {
           {active && !isOwner && token?.market?.floorSell?.value && (
             <div className="w-full">
               <BuyButton
+                ens={ens}
+                onSuccess={() => {
+                  mutateTokenData();
+                  mutateMetadata();
+                  mutateBuyOrdersData();
+                }}
                 orderHash={token.market.floorSell.hash}
                 tokenId={token.token.tokenId}
               />

@@ -12,11 +12,13 @@ const useMultiCall = () => {
         PROVIDERS[process.env.NEXT_PUBLIC_NETWORK],
       );
       const ethcallProvider = new Provider();
-      await ethcallProvider.init(provider);
+      await ethcallProvider.init(provider as any);
       if (process.env.NEXT_PUBLIC_NETWORK === "Localnet") {
+        // @ts-ignore
         ethcallProvider.multicallAddress =
           "0xeefba1e63905ef1d7acba5a8513c70307c1ce441"; // ONLY WHEN LOCAL
       }
+      // @ts-ignore
       setMultiCall(ethcallProvider);
     };
 
