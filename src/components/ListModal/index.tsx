@@ -16,7 +16,7 @@ import { getIndexer } from "~/utils/indexers";
 import { useToast } from "~/contexts/ToastContext";
 import EthIcon from "~/components/EthIcon";
 import Modal from "~/components/Modal";
-import ERC721 from "~/abis/ERC721.json";
+import ENSRegistrar from "~/abis/ENSRegistrar.json";
 
 type Props = {
   isOpen: boolean;
@@ -57,7 +57,7 @@ export default function ListModal({
   currentPrice,
   onSuccess,
 }: Props) {
-  const ensContract = new Contract(getContract("ens"), ERC721);
+  const ensContract = new Contract(getContract("ens"), ENSRegistrar);
   const proxyRegistryContract = new Contract(
     getContract("openseaProxyRegistry"),
     new Interface([
@@ -189,7 +189,7 @@ export default function ListModal({
       addToast(
         <span className="flex items-center">
           {currentPrice ? "lowered price to" : "listed for"}
-          <EthIcon className="inline-block w-2 ml-1 mr-0.5" />
+          <EthIcon className="inline-block w-2 ml-1 mr-1" />
           <span className="font-mono tracking-tighter">{values.amount}</span>
         </span>,
         "success",
