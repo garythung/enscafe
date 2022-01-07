@@ -185,7 +185,6 @@ const getExpiration = (metadata: any): number => {
 };
 
 export default function Name() {
-  const { addToast } = useToast();
   const { account, activate, active } = useWallet();
   const router = useRouter();
   const [isOwner, setIsOwner] = useState(false);
@@ -241,8 +240,13 @@ export default function Name() {
 
     // route to .eth ending
     if (ens.slice(ens.length - 4) !== ".eth") {
-      router.push(`/names/${ens}.eth`, undefined, { shallow: true });
-      return;
+      router.push(`/names/${ens.toLowerCase()}.eth`, undefined, {
+        shallow: true,
+      });
+    } else {
+      router.push(`/names/${ens.toLowerCase()}`, undefined, {
+        shallow: true,
+      });
     }
 
     setStatus("ready");

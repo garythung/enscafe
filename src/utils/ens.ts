@@ -2,7 +2,7 @@ import { BigNumber, utils } from "ethers";
 import { namehash } from "@ethersproject/hash";
 
 export const getTokenIdFromName = (name: string): string => {
-  const labelHash = utils.keccak256(utils.toUtf8Bytes(name));
+  const labelHash = utils.keccak256(utils.toUtf8Bytes(name.toLowerCase()));
   return BigNumber.from(labelHash).toString();
 };
 
