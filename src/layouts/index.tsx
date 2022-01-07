@@ -1,9 +1,19 @@
 import Link from "next/link";
 
-import LinkButton from "~/components/LinkButton";
 import SearchBar from "~/components/SearchBar";
 import Wallet from "~/components/Wallet";
 import { LINKS } from "~/constants/links";
+
+const FooterLink = ({ text, href }: { text: string; href: string }) => (
+  <a
+    className="text-primary-blue font-semibold"
+    target="_blank"
+    rel="noopener noreferrer"
+    href={href}
+  >
+    {text}
+  </a>
+);
 
 const Layout = ({ children }) => {
   return (
@@ -22,31 +32,10 @@ const Layout = ({ children }) => {
         </div>
       </div>
       <div className="px-4 md:px-10">{children}</div>
-      <div className="px-4 md:px-10 pb-8 mt-auto pt-8">
-        <a
-          className="text-primary-blue font-semibold"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={LINKS.notion}
-        >
-          faq
-        </a>
-        <a
-          className="text-primary-blue font-semibold ml-4"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={LINKS.github}
-        >
-          github
-        </a>
-        <a
-          className="text-primary-blue font-semibold ml-4"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={LINKS.twitter}
-        >
-          twitter
-        </a>
+      <div className="px-4 md:px-10 pb-8 mt-auto pt-8 space-x-4">
+        <FooterLink text="faq" href={LINKS.notion} />
+        <FooterLink text="github" href={LINKS.github} />
+        <FooterLink text="twitter" href={LINKS.twitter} />
       </div>
     </div>
   );
