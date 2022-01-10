@@ -33,7 +33,7 @@ const Layout = ({ children }) => {
       </div>
       <div className="px-4 md:px-10">{children}</div>
       <div className="px-4 md:px-10 pb-8 mt-auto pt-8 space-x-4">
-        <FooterLink text="faq" href={LINKS.notion} />
+        <FooterLink text="faq" href={LINKS.faq} />
         <FooterLink text="github" href={LINKS.github} />
         <FooterLink text="twitter" href={LINKS.twitter} />
       </div>
