@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ensdomains/ens-validation": "^0.1.0",
+    "@ensdomains/eth-ens-namehash": "^2.0.15",
     "@heroicons/react": "^1.0.3",
     "@reservoir0x/sdk": "^0.0.11",
     "@web3-react/core": "^6.1.9",

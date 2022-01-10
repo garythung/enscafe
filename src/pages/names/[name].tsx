@@ -5,9 +5,10 @@ import { WyvernV2 } from "@reservoir0x/sdk";
 import { ethers } from "ethers";
 import Head from "next/head";
 
+import { normalize } from "@ensdomains/eth-ens-namehash";
 import { getIndexer } from "~/utils/indexers";
 import api, { useGetter } from "~/utils/api";
-import { getTokenIdFromName } from "~/utils/ens";
+import { getENSMetadataUrl, getTokenIdFromName } from "~/utils/ens";
 import Layout from "~/layouts";
 import WordArt from "~/components/WordArt";
 import useENSName from "~/hooks/useENSName";
@@ -241,9 +242,9 @@ export default function Name() {
       !!ensWithoutTLD,
   );
   const { data: metadata, mutate: mutateMetadata } = useGetter(
-    `https://metadata.ens.domains/rinkeby/${getContract(
-      "ens",
-    )}/${getTokenIdFromName(ens.slice(0, ens.length - 4))}`,
+    `${getENSMetadataUrl()}/${getContract("ens")}/${getTokenIdFromName(
+      ens.slice(0, ens.length - 4),
+    )}`,
     status === "ready" &&
       !!tokenData?.tokens.length &&
       !!ens &&
@@ -263,11 +264,11 @@ export default function Name() {
 
     // route to .eth ending
     if (ens.slice(ens.length - 4) !== ".eth") {
-      router.push(`/names/${ens.toLowerCase()}.eth`, undefined, {
+      router.push(`/names/${normalize(ens)}.eth`, undefined, {
         shallow: true,
       });
     } else {
-      router.push(`/names/${ens.toLowerCase()}`, undefined, {
+      router.push(`/names/${normalize(ens)}`, undefined, {
         shallow: true,
       });
     }
