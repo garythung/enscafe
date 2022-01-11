@@ -4,7 +4,7 @@ import { getEtherscanLink } from "~/utils";
 
 type ToastContextType = {
   addToast: ({ content, variant, disappears }: ToastInputData) => void;
-  removeToast: (id: string) => void;
+  removeToast: (id: number) => void;
   addTxMiningToast: (txHash: String) => void;
 };
 
