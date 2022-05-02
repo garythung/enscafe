@@ -20,7 +20,7 @@ export const NameList = ({ query }: Props) => {
       setState(res.data.tokens);
     });
   }, []);
-
+  console.log(state);
   return (
     <div>
       {state.map((item: any, index: number) => {

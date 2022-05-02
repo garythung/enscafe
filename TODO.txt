@@ -1,5 +1,0 @@
-1. add more wallet connections
-2. add transaction mining popup + outlet to etherscan
-3. add OS proxy registration check to SellButton
-4. move OS proxy registration, OS NFT approval, OS WETH approval checks to a top level state (currently local to list/offer modals)
-5. create opengraph cover images

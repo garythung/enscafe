@@ -126,7 +126,7 @@ export default function ListModal({
     }
   };
 
-  const handleApproveTransfers = async () => {
+  const handleApproveNFTTransfers = async () => {
     try {
       setIsMining(true);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -138,12 +138,11 @@ export default function ListModal({
       setIsMining(false);
       setEnsTransfersApproved(true);
       addToast({
-        content: <span>transfers approved for opensea</span>,
+        content: <span>ens transfers approved for opensea</span>,
         variant: "success",
       });
     } catch (error) {
       setIsMining(false);
-      // TODO: error handling
       addToast({
         content: <span>something went wrong, try again</span>,
         variant: "danger",
@@ -353,9 +352,9 @@ export default function ListModal({
                   <Button
                     variant="primary"
                     loading={isMining}
-                    onClick={handleApproveTransfers}
+                    onClick={handleApproveNFTTransfers}
                   >
-                    approve opensea transfers
+                    approve opensea ens transfers
                   </Button>
                 )}
             </Form>

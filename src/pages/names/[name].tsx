@@ -370,7 +370,7 @@ export default function Name() {
 
       {/* INFO */}
       {owner && (
-        <div className="flex w-full items-center justify-between mt-4">
+        <div className="flex w-full items-end justify-between mt-4">
           <div>
             <p>owned by {simplifyAddress(owner, account, ownerENSName)}</p>
           </div>
