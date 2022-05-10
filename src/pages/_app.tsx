@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import {
   apiProvider,
   configureChains,
-  getDefaultWallets,
   RainbowKitProvider,
+  connectorsForWallets,
+  wallet,
 } from "@rainbow-me/rainbowkit";
 import { chain, createClient, WagmiProvider } from "wagmi";
 
@@ -29,10 +30,26 @@ const { chains, provider } = configureChains(
   ],
 );
 
-const { connectors } = getDefaultWallets({
-  appName: "ens cafe",
-  chains,
-});
+const needsInjectedWalletFallback =
+  typeof window !== "undefined" &&
+  window.ethereum &&
+  !window.ethereum.isMetaMask &&
+  !window.ethereum.isCoinbaseWallet;
+
+const connectors = connectorsForWallets([
+  {
+    groupName: "Suggested",
+    wallets: [
+      wallet.coinbase({ chains, appName: "ens cafe" }),
+      wallet.walletConnect({ chains }),
+      wallet.rainbow({ chains }),
+      wallet.ledger({ chains }),
+      wallet.metaMask({ chains }),
+      wallet.argent({ chains }),
+      ...(needsInjectedWalletFallback ? [wallet.injected({ chains })] : []),
+    ],
+  },
+]);
 
 const wagmiClient = createClient({
   autoConnect: true,
