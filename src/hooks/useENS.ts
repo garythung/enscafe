@@ -1,5 +1,6 @@
-import { ENS_METADATA_URLS } from "~/constants/ens";
 import { useNetwork } from "wagmi";
+
+import { ENS_METADATA_URLS } from "~/constants/ens";
 
 export const useENS = () => {
   const { activeChain } = useNetwork();

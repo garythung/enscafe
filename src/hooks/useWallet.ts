@@ -17,6 +17,7 @@ const useWallet = () => {
   const { disconnect } = useDisconnect();
   const { activeChain } = useNetwork();
   const provider = useProvider();
+
   const { data: balanceData } = useBalance({
     addressOrName: accountData?.address,
     chainId: activeChain?.id,

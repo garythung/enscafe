@@ -1,8 +1,9 @@
 import { useNetwork } from "wagmi";
 
 const API_URLS = {
-  Ethereum: "https://api.reservoir.tools",
+  Localhost: "https://api.reservoir.tools",
   Rinkeby: "https://api-rinkeby.reservoir.tools",
+  Ethereum: "https://api.reservoir.tools",
 };
 
 export const useReservoir = () => {

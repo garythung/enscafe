@@ -18,7 +18,7 @@ const useMultiCall = () => {
       if (activeChain.name === "Localhost") {
         // @ts-ignore
         ethcallProvider.multicallAddress =
-          "0xeefba1e63905ef1d7acba5a8513c70307c1ce441"; // ONLY WHEN LOCAL
+          "0xeefba1e63905ef1d7acba5a8513c70307c1ce441"; // when local use mainnet
       }
       // @ts-ignore
       setMultiCall(ethcallProvider);

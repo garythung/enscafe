@@ -183,7 +183,7 @@ const getExpiration = (metadata: any): number => {
 };
 
 export default function Name() {
-  const { account, activate, active } = useWallet();
+  const { account, active } = useWallet();
   const router = useRouter();
   const [isOwner, setIsOwner] = useState(false);
   const [status, setStatus] = useState<Status>("redirecting");
@@ -236,7 +236,7 @@ export default function Name() {
   const { data: ownerENSName } = useEnsName({
     address: owner || "",
   });
-  console.log(token);
+
   useEffect(() => {
     if (!ens) {
       return;
