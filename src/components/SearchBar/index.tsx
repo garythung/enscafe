@@ -4,6 +4,10 @@ type Values = {
   search: string;
 };
 
+type Props = {
+  placeholder: string;
+};
+
 const Input = ({ label, helpText, ...props }) => {
   const [field] = useField(props as any);
 
@@ -16,13 +20,12 @@ const Input = ({ label, helpText, ...props }) => {
       {...field}
       {...props}
       onChange={onChange}
-      placeholder="→ your new ens..."
       className="w-full px-4 border-1 border-black font-pressura text-xl"
     />
   );
 };
 
-export default function SearchBar() {
+export default function SearchBar({ placeholder }: Props) {
   const onSubmit = async (values: Values) => {
     if (!values.search) {
       return;
@@ -49,6 +52,7 @@ export default function SearchBar() {
           name="search"
           helpText="Search here"
           type="text"
+          placeholder={placeholder}
         />
       </Form>
     </Formik>

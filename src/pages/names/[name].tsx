@@ -8,7 +8,7 @@ import { acceptOffer, cancelOrder } from "@reservoir0x/client-sdk";
 
 import { useGetter } from "~/utils/api";
 import { getTokenIdFromName } from "~/utils/ens";
-import Layout from "~/layouts";
+import Layout from "~/layouts/Layout";
 import WordArt from "~/components/WordArt";
 import LinkButton from "~/components/LinkButton";
 import useWallet from "~/hooks/useWallet";
