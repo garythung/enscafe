@@ -1,4 +1,5 @@
 import React, { useState, useContext, useCallback } from "react";
+import { useNetwork } from "wagmi";
 import ToastContainer from "~/components/ToastContainer";
 import { getEtherscanLink } from "~/utils";
 
@@ -24,6 +25,7 @@ let id = 1;
 
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState<ToastData[]>([]);
+  const { activeChain } = useNetwork();
 
   const addToast = useCallback(
     ({ content, variant, disappears = false }: ToastInputData) => {
@@ -53,7 +55,7 @@ export const ToastProvider = ({ children }) => {
                 className="text-primary-blue font-medium text-sm"
                 target="_blank"
                 rel="noopener noreferrer"
-                href={getEtherscanLink(hash, "transaction")}
+                href={getEtherscanLink(activeChain.id, hash, "transaction")}
               >
                 view tx here
               </a>

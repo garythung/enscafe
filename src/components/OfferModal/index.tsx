@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import DatePicker from "react-datepicker";
-import { WyvernV2 } from "@reservoir0x/sdk";
 import { Contract, ethers } from "ethers";
 import CurrencyInput from "react-currency-input-field";
+import { useSigner } from "wagmi";
+import { placeBid } from "@reservoir0x/client-sdk";
+import * as Yup from "yup";
 
 import Button from "~/components/Button";
 import RadioButton from "~/components/RadioButton";
-import { getContract } from "~/utils/contracts";
 import useWallet from "~/hooks/useWallet";
-import api from "~/utils/api";
-import { getChainId } from "~/utils/networks";
-import { getIndexer } from "~/utils/indexers";
 import { useToast } from "~/contexts/ToastContext";
 import EthIcon from "~/components/EthIcon";
-import ERC20 from "~/abis/ERC20.json";
+import ERC20ABI from "~/abis/ERC20.json";
 import Modal from "~/components/Modal";
+import { useContractAddress } from "~/hooks/useContractAddress";
+import { useReservoir } from "~/hooks/useReservoir";
 
 type Props = {
   isOpen: boolean;
@@ -32,7 +32,7 @@ type Values = {
   customExpiration: Date;
 };
 
-const getExpiration = (expiration: string, customExpiration: Date) => {
+const getExpiration = (expiration: string, customExpiration: Date): number => {
   if (expiration === "1 hour") {
     return Math.floor(Date.now() / 1000) + 60 * 60;
   }
@@ -48,6 +48,10 @@ const getExpiration = (expiration: string, customExpiration: Date) => {
   return Math.floor(customExpiration.valueOf() / 1000);
 };
 
+const OfferSchema = Yup.object().shape({
+  amount: Yup.string().min(1).required("Required!"),
+});
+
 export default function OfferModal({
   isOpen,
   onClose,
@@ -55,11 +59,18 @@ export default function OfferModal({
   ens,
   onSuccess,
 }: Props) {
-  const wethContract = new Contract(getContract("weth"), ERC20);
   const { account } = useWallet();
   const { addToast, addTxMiningToast } = useToast();
   const [wethAllowance, setWethAllowance] = useState(ethers.BigNumber.from(0));
   const [isMining, setIsMining] = useState(false);
+  const { data: signer } = useSigner();
+  const wyvernTokenTransferProxyAddr = useContractAddress(
+    "wyvernTokenTransferProxy",
+  );
+  const wethAddr = useContractAddress("weth");
+  const wethContract = new Contract(wethAddr, ERC20ABI);
+  const ensAddr = useContractAddress("ens");
+  const { apiBase } = useReservoir();
 
   // check weth allowance
   useEffect(() => {
@@ -68,11 +79,9 @@ export default function OfferModal({
         return;
       }
 
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-
       const allowance = await wethContract
-        .connect(provider.getSigner())
-        .allowance(account, getContract("openseaTokenTransferProxy"));
+        .connect(signer)
+        .allowance(account, wyvernTokenTransferProxyAddr);
       setWethAllowance(allowance);
     };
 
@@ -86,11 +95,10 @@ export default function OfferModal({
   const handleWethAllowance = async () => {
     try {
       setIsMining(true);
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
       const { wait, hash } = await wethContract
-        .connect(provider.getSigner())
+        .connect(signer)
         .approve(
-          getContract("openseaTokenTransferProxy"),
+          wyvernTokenTransferProxyAddr,
           ethers.constants.MaxUint256.toString(),
         );
 
@@ -112,68 +120,47 @@ export default function OfferModal({
   };
 
   const onSubmit = async (values: Values) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-    // construct order params
-    const buyOrderParams = {
-      contract: getContract("ens"),
-      maker: account,
-      tokenId: tokenId,
-      side: "buy",
-      price: ethers.utils.parseEther(values.amount).toString(),
-      expirationTime: getExpiration(values.expiration, values.customExpiration),
-      fee: "0",
-      feeRecipient: account,
-    };
-
-    // get formatted params
-    const response = await api.get(
-      `${getIndexer()}/orders/build?${Object.keys(buyOrderParams)
-        .map((key) => key + "=" + buyOrderParams[key])
-        .join("&")}`,
-    );
-
-    // create sell order
-    const sellOrder = new WyvernV2.Order(
-      getChainId(),
-      response.data.order.params,
-    );
-
-    try {
-      setIsMining(true);
-      // sign order
-      await sellOrder.sign(provider.getSigner() as any);
-
-      // post order to Reservoir
-      await api.post(`${getIndexer()}/orders`, {
-        orders: [
-          {
-            kind: "wyvern-v2",
-            data: sellOrder.params,
-          },
-        ],
-      });
-      setIsMining(false);
-      onSuccess();
-
-      addToast({
-        content: (
-          <span className="flex items-center">
-            offered
-            <EthIcon className="inline-block w-2 ml-1 mr-1" />
-            <span className="font-mono tracking-tighter">{values.amount}</span>
-          </span>
-        ),
-        variant: "success",
-      });
-      onClose();
-    } catch (error) {
-      setIsMining(false);
-      addToast({
-        content: <span>something went wrong, try again</span>,
-        variant: "danger",
-      });
-    }
+    setIsMining(true);
+    await placeBid({
+      query: {
+        orderbook: "reservoir",
+        orderKind: "wyvern-v2.3",
+        maker: account,
+        weiPrice: ethers.utils.parseEther(values.amount).toString(),
+        expirationTime: getExpiration(
+          values.expiration,
+          values.customExpiration,
+        ).toString(),
+        token: `${ensAddr}:${tokenId}`,
+      },
+      signer,
+      apiBase,
+      setState: () => {},
+      handleError: (error) => {
+        setIsMining(false);
+        addToast({
+          content: <span>something went wrong, try again</span>,
+          variant: "danger",
+        });
+      },
+      handleSuccess: () => {
+        setIsMining(false);
+        onSuccess();
+        addToast({
+          content: (
+            <span className="flex items-center">
+              offered
+              <EthIcon className="inline-block w-2 ml-1 mr-1" />
+              <span className="font-mono tracking-tighter">
+                {values.amount}
+              </span>
+            </span>
+          ),
+          variant: "success",
+        });
+        onClose();
+      },
+    });
   };
 
   if (!isOpen) {
@@ -192,12 +179,11 @@ export default function OfferModal({
           onSubmit={onSubmit}
           validateOnChange={false}
           validateOnBlur={false}
+          validationSchema={OfferSchema}
         >
           {({ errors, handleChange, setFieldError, values, setFieldValue }) => (
             <Form className="w-full flex flex-col self-center h-4/5 px-6 pt-12 pb-8 gap-y-4">
-              <h1 className="text-3xl font-medium tracking-tight font-pressura">
-                {ens}
-              </h1>
+              <h1 className="text-3xl font-bold font-pressura">{ens}</h1>
               <div className="flex flex-col border-1 border-black py-2.5 px-3 gap-y-2.5">
                 <label
                   className={`text-sm text-gray-500 font-medium ${
@@ -303,7 +289,7 @@ export default function OfferModal({
                   loading={isMining}
                   onClick={handleWethAllowance}
                 >
-                  let opensea use your weth
+                  let opensea use your WETH
                 </Button>
               )}
             </Form>

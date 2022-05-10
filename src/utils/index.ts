@@ -1,6 +1,5 @@
 import { isEmpty } from "lodash";
 import { ethers } from "ethers";
-import { NETWORKS } from "~/constants/networks";
 
 const ETHERSCAN_PREFIXES = {
   1: "",
@@ -11,10 +10,10 @@ const ETHERSCAN_PREFIXES = {
 };
 
 export const getEtherscanLink = (
+  chainId: number,
   data: string,
   type: "transaction" | "token" | "address" | "block",
 ) => {
-  const chainId: number = NETWORKS[process.env.NEXT_PUBLIC_NETWORK];
   const prefix: string = `https://${
     ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]
   }etherscan.io`;

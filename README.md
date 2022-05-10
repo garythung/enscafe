@@ -12,10 +12,11 @@ yarn dev
 ```
 
 ## tech stack
-* Next.js
-* React
-* Tailwind CSS
-* █████████ Protocol
+* [React](https://reactjs.org/)
+* [Next.js](https://nextjs.org/)
+* [Tailwind CSS](https://tailwindcss.com/)
+* [RainbowKit](https://www.rainbowkit.com/)
+* [Reservoir Protocol](https://twitter.com/reservoir0x)
 
 ## learn more
 

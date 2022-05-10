@@ -1,87 +1,79 @@
-import { ethers } from "ethers";
-import { WyvernV2 } from "@reservoir0x/sdk";
 import { useState } from "react";
+import { useSigner } from "wagmi";
+import { buyToken } from "@reservoir0x/client-sdk";
 
 import Button from "~/components/Button";
 import useWallet from "~/hooks/useWallet";
-import api from "~/utils/api";
-import { getIndexer } from "~/utils/indexers";
 import { useToast } from "~/contexts/ToastContext";
-import { getChainId } from "~/utils/networks";
 import EthIcon from "~/components/EthIcon";
+import { useContractAddress } from "~/hooks/useContractAddress";
+import { useReservoir } from "~/hooks/useReservoir";
 
 type Props = {
   tokenId: string;
-  ens: string;
-  orderHash: string;
   onSuccess: () => void;
+  amount: string;
 };
 
-export default function BuyButton({
-  tokenId,
-  ens,
-  orderHash,
-  onSuccess,
-}: Props) {
+export default function BuyButton({ tokenId, onSuccess, amount }: Props) {
   const { account } = useWallet();
   const { addToast, addTxMiningToast } = useToast();
   const [isMining, setIsMining] = useState(false);
+  const { data: signer } = useSigner();
+  const ensAddr = useContractAddress("ens");
+  const { apiBase } = useReservoir();
 
   const test = () => {
     addTxMiningToast("abc");
+    addToast({
+      content: (
+        <span className="flex items-center">
+          bought for bought for bought for bought for
+          <EthIcon className="inline-block w-2 ml-1 mr-1" />
+          <span className="font-mono tracking-tighter">1</span>!
+        </span>
+      ),
+      variant: "success",
+    });
   };
 
   const onClick = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await buyToken({
+      query: {
+        token: `${ensAddr}:${tokenId}`,
+        taker: account,
+      },
+      signer,
+      apiBase,
+      setState: () => {},
+      handleError: (error) => {
+        setIsMining(false);
+        addToast({
+          content: <span>something went wrong, try again</span>,
+          variant: "danger",
+        });
+      },
+      handleSuccess: () => {
+        setIsMining(false);
+        onSuccess();
 
-    const sellOrderResponse = await api.get(
-      `${getIndexer()}/orders?side=sell&hash=${orderHash}`,
-    );
-    const sellOrder = new WyvernV2.Order(
-      getChainId(),
-      sellOrderResponse.data.orders[0].rawData,
-    );
-    const takerBuyOrder = sellOrder.buildMatching(account);
-    const exchange = new WyvernV2.Exchange(getChainId());
-
-    try {
-      setIsMining(true);
-      const { wait, hash } = await exchange.match(
-        provider.getSigner() as any,
-        takerBuyOrder,
-        sellOrder,
-      );
-      addTxMiningToast(hash);
-      await wait();
-      onSuccess();
-      setIsMining(false);
-
-      addToast({
-        content: (
-          <span className="flex items-center">
-            bought for
-            <EthIcon className="inline-block w-2 ml-1 mr-1" />
-            <span className="font-mono tracking-tighter">
-              {ethers.utils.formatUnits(
-                sellOrderResponse.data.orders[0].rawData.basePrice,
-              )}
+        addToast({
+          content: (
+            <span className="flex items-center">
+              bought for
+              <EthIcon className="inline-block w-2 ml-1 mr-1" />
+              <span className="font-mono tracking-tighter">{amount}</span>!
             </span>
-          </span>
-        ),
-        variant: "success",
-      });
-    } catch (error) {
-      setIsMining(false);
-      addToast({
-        content: <span>something went wrong, try again</span>,
-        variant: "danger",
-      });
-    }
+          ),
+          variant: "success",
+        });
+      },
+    });
   };
 
   return (
     <>
-      <button onClick={test}>test</button>
+      {/* <button onClick={test}>test</button> */}
       <Button fluid variant="primary" onClick={onClick} loading={isMining}>
         buy now
       </Button>

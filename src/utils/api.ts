@@ -1,8 +1,6 @@
 import Axios from "axios";
 import useSWR from "swr";
 
-import { getIndexer } from "~/utils/indexers";
-
 const api = Axios.create({
   withCredentials: false,
   headers: {
@@ -10,15 +8,6 @@ const api = Axios.create({
     "Content-Type": "application/json",
   },
 });
-
-export const useIndexer = (path, config) => {
-  return api.get(getIndexer() + path, {
-    ...config,
-    params: {
-      ...config.params,
-    },
-  });
-};
 
 // @ts-ignore
 const fetcher = (url: string) => api.get(url).then((response) => response.data);

@@ -7,7 +7,13 @@ const BASE_CLASSNAMES = [
 ];
 
 interface Props {
-  variant?: "gradient" | "primary" | "secondary" | "pill" | "pill-secondary";
+  variant?:
+    | "gradient"
+    | "primary"
+    | "secondary"
+    | "pill"
+    | "pill-secondary"
+    | "error";
   fluid?: boolean;
   onClick?(event: React.MouseEvent<HTMLButtonElement>): void;
   children: React.ReactNode;
@@ -15,6 +21,47 @@ interface Props {
   disabled?: boolean;
   type?: "button" | "submit" | "reset";
 }
+
+const LoadingSpinner = ({ loading = false, variant }) => {
+  if (!loading) {
+    return null;
+  }
+
+  let textColor = "text-white";
+  if (variant === "secondary") {
+    textColor = "text-cafe-pink";
+  } else if (variant === "pill-secondary") {
+    textColor = "text-black";
+  }
+
+  let sizing = "mr-3 h-5 w-5";
+  if (["pill", "pill-secondary"].includes(variant)) {
+    sizing = "mr-1 h-3.5 w-3.5";
+  }
+
+  return (
+    <svg
+      className={`animate-spin -ml-1 ${sizing} ${textColor}`}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      ></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      ></path>
+    </svg>
+  );
+};
 
 const Button = ({
   variant = "gradient",
@@ -37,7 +84,7 @@ const Button = ({
   }
 
   if (variant === "gradient") {
-    classNames.push("bg-gradient");
+    classNames.push("text-white bg-gradient");
   } else if (variant === "primary") {
     classNames.push("text-white bg-cafe-pink");
   } else if (variant === "secondary") {
@@ -45,7 +92,9 @@ const Button = ({
   } else if (variant === "pill") {
     classNames.push("text-white bg-black");
   } else if (variant === "pill-secondary") {
-    classNames.push("bg-white border-1 border-black text-black");
+    classNames.push("text-black bg-white border-1 border-black");
+  } else if (variant === "error") {
+    classNames.push("text-white bg-red-500 font-bold");
   }
 
   if (["pill", "pill-secondary"].includes(variant)) {
@@ -62,28 +111,7 @@ const Button = ({
       onClick={onClick}
       className={classNames.join(" ")}
     >
-      {loading && (
-        <svg
-          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-      )}
+      <LoadingSpinner loading={loading} variant={variant} />
       {children}
     </button>
   );

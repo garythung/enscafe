@@ -1,11 +1,12 @@
+import Link from "next/link";
 import { getAddress } from "@ethersproject/address";
 
 // Returns checksummed address or false if not valid
-export const isAddress = (value: string) => {
+export const isAddress = (value: string): string => {
   try {
     return getAddress(value);
   } catch {
-    return false;
+    return "";
   }
 };
 
@@ -16,7 +17,11 @@ export const shortenAddress = (address: string, chars: number = 4) => {
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
 
-  return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
+  // 2 at start, 4 at end
+  return `${parsed.substring(0, 4)}...${parsed.substring(42 - 4)}`;
+
+  // choose # of chars at start and end
+  // return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
 };
 
 // gets simplified address text for display, comparing with connected account
@@ -39,7 +44,13 @@ export const simplifyAddress = (
   }
 
   if (addressENSName) {
-    return <span className="font-pressura">{addressENSName}</span>;
+    return (
+      <span className="font-pressura tracking-tighter font-semibold">
+        <Link passHref href={`/names/${addressENSName}`}>
+          <a>{addressENSName}</a>
+        </Link>
+      </span>
+    );
   }
 
   return shortenAddress(address);

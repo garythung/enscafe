@@ -1,53 +1,37 @@
-import { useWeb3React } from "@web3-react/core";
-import useSWR from "swr";
-import { useEffect } from "react";
-import { ethers } from "ethers";
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useNetwork,
+  useProvider,
+  useBalance,
+} from "wagmi";
 
-import { PROVIDERS } from "~/constants/providers";
-import { injectedConnector } from "~/utils/connectors";
-
-const fetcher =
-  (library) =>
-  (...args) => {
-    const [account, method, ...params] = args;
-    return library[method](account, ...params);
-  };
+import { InjectedConnector } from "wagmi/connectors/injected";
 
 const useWallet = () => {
-  const { account, activate, active, deactivate, error, library, chainId } =
-    useWeb3React();
-  const { data: balance, mutate } = useSWR([account, "getBalance", "latest"], {
-    fetcher: fetcher(library),
+  const { data: accountData, error } = useAccount();
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
+  const { disconnect } = useDisconnect();
+  const { activeChain } = useNetwork();
+  const provider = useProvider();
+  const { data: balanceData } = useBalance({
+    addressOrName: accountData?.address,
+    chainId: activeChain?.id,
+    watch: true,
   });
 
-  useEffect(() => {
-    if (!library) {
-      return;
-    }
-
-    // listen for changes on an Ethereum address and update balance
-    library.on(account, (balance) => {
-      mutate(balance, false);
-    });
-
-    // remove listener when the component is unmounted
-    return () => {
-      library.removeAllListeners(account);
-    };
-  }, []);
-
   return {
-    account,
-    deactivate,
-    active,
-    error,
-    chainId,
-    library,
-    provider: new ethers.providers.JsonRpcProvider(
-      PROVIDERS[process.env.NEXT_PUBLIC_NETWORK],
-    ),
-    activate: () => activate(injectedConnector),
-    balance: balance ? ethers.utils.formatEther(balance) : "0", // string
+    account: accountData?.address,
+    deactivate: disconnect,
+    active: !!accountData,
+    error: error,
+    chainId: activeChain?.id,
+    provider,
+    activate: connect,
+    balance: balanceData ? balanceData.value.toString() : "0", // string
   };
 };
 

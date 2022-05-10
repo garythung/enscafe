@@ -1,17 +1,15 @@
 import { validate } from "@ensdomains/ens-validation";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { WyvernV2 } from "@reservoir0x/sdk";
-import { ethers } from "ethers";
 import Head from "next/head";
-
+import { useEnsName, useSigner } from "wagmi";
 import { normalize } from "@ensdomains/eth-ens-namehash";
-import { getIndexer } from "~/utils/indexers";
-import api, { useGetter } from "~/utils/api";
-import { getENSMetadataUrl, getTokenIdFromName } from "~/utils/ens";
+import { acceptOffer, cancelOrder } from "@reservoir0x/client-sdk";
+
+import { useGetter } from "~/utils/api";
+import { getTokenIdFromName } from "~/utils/ens";
 import Layout from "~/layouts";
 import WordArt from "~/components/WordArt";
-import useENSName from "~/hooks/useENSName";
 import LinkButton from "~/components/LinkButton";
 import useWallet from "~/hooks/useWallet";
 import Button from "~/components/Button";
@@ -21,12 +19,13 @@ import EthIcon from "~/components/EthIcon";
 import OfferButton from "~/components/OfferButton";
 import SellButton from "~/components/SellButton";
 import ListButton from "~/components/ListButton";
-import { getContract } from "~/utils/contracts";
 import { useToast } from "~/contexts/ToastContext";
-import { getChainId } from "~/utils/networks";
 import { formatDateHuman, formatDateTimeHuman } from "~/utils/dates";
 import { simplifyAddress, isAddress } from "~/utils/addresses";
-import { getEtherscanLink } from "~/utils";
+import ConnectWalletButton from "~/components/ConnectWalletButton";
+import { useContractAddress } from "~/hooks/useContractAddress";
+import { useReservoir } from "~/hooks/useReservoir";
+import { useENS } from "~/hooks/useENS";
 
 type Status = "redirecting" | "ready";
 
@@ -54,103 +53,76 @@ const Container = ({
 const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
   const { account, active } = useWallet();
   const { addToast } = useToast();
-  const ensName = useENSName(order.maker);
+  const { data: ensName } = useEnsName({ address: order.maker || "" });
   const isMaker = active && account && account === isAddress(order.maker);
   const isOwner = active && account && account === isAddress(owner);
   const hasExpiration = order.validUntil !== 0;
   const validUntilDate = new Date(order.validUntil * 1000);
+  const [isMining, setIsMining] = useState(false);
+  const { data: signer } = useSigner();
+  const { apiBase } = useReservoir();
 
-  const handleAccept = async (orderHash: string) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const handleAccept = async (order: any) => {
+    setIsMining(true);
+    await acceptOffer({
+      query: {
+        token: order.tokenSetId.replace("token:", ""),
+        taker: account,
+      },
+      signer,
+      apiBase,
+      setState: () => {},
+      handleError: (error) => {
+        setIsMining(false);
+        addToast({
+          content: <span>something went wrong, try again</span>,
+          variant: "danger",
+        });
+      },
+      handleSuccess: () => {
+        setIsMining(false);
+        onAcceptSuccess();
 
-    const buyOrderResponse = await api.get(
-      `${getIndexer()}/orders?side=buy&hash=${orderHash}`,
-    );
-
-    const buyOrder = new WyvernV2.Order(
-      getChainId(),
-      buyOrderResponse.data.orders[0].rawData,
-    );
-
-    const takerSellOrder = buyOrder.buildMatching(account);
-    const exchange = new WyvernV2.Exchange(getChainId());
-    const { wait, hash } = await exchange.match(
-      provider.getSigner() as any,
-      buyOrder,
-      takerSellOrder,
-    );
-
-    addToast({
-      content: (
-        <div className="flex flex-col">
-          <span>transaction sent</span>
-          <a href={getEtherscanLink(hash, "transaction")}>view here</a>
-        </div>
-      ),
-      variant: "success",
-    });
-    await wait();
-    onAcceptSuccess();
-
-    addToast({
-      content: (
-        <span className="flex items-center">
-          sold for
-          <EthIcon className="inline-block w-2 ml-1 mr-1" />
-          <span className="font-mono tracking-tighter">
-            {ethers.utils.formatUnits(
-              buyOrderResponse.data.orders[0].rawData.basePrice,
-            )}
-          </span>
-        </span>
-      ),
-      variant: "success",
+        addToast({
+          content: (
+            <span className="flex items-center">
+              sold for
+              <EthIcon className="inline-block w-2 ml-1 mr-1" />
+              <span className="font-mono tracking-tighter">{order.price}</span>!
+            </span>
+          ),
+          variant: "success",
+        });
+      },
     });
   };
 
-  const handleCancel = async (orderHash: string) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const handleCancel = async (order: any) => {
+    setIsMining(true);
+    await cancelOrder({
+      query: {
+        id: order.id,
+        maker: account,
+      },
+      signer,
+      apiBase,
+      setState: () => {},
+      handleError: (error) => {
+        setIsMining(false);
+        addToast({
+          content: <span>something went wrong, try again</span>,
+          variant: "danger",
+        });
+      },
+      handleSuccess: () => {
+        setIsMining(false);
+        onCancelSuccess();
 
-    const buyOrderResponse = await api.get(
-      `${getIndexer()}/orders?side=buy&hash=${orderHash}`,
-    );
-
-    const buyOrder = new WyvernV2.Order(
-      getChainId(),
-      buyOrderResponse.data.orders[0].rawData,
-    );
-
-    const exchange = new WyvernV2.Exchange(getChainId());
-    const { wait, hash } = await exchange.cancel(
-      provider.getSigner() as any,
-      buyOrder,
-    );
-
-    addToast({
-      content: (
-        <div className="flex flex-col">
-          <span>transaction sent</span>
-          <a href={getEtherscanLink(hash, "transaction")}>view here</a>
-        </div>
-      ),
-      variant: "success",
-    });
-    await wait();
-    onCancelSuccess();
-
-    addToast({
-      content: (
-        <span className="flex items-center">
-          canceled offer of
-          <EthIcon className="inline-block w-2 ml-1 mr-1" />
-          <span className="font-mono tracking-tighter">
-            {ethers.utils.formatUnits(
-              buyOrderResponse.data.orders[0].rawData.basePrice,
-            )}
-          </span>
-        </span>
-      ),
-      variant: "success",
+        addToast({
+          content: <span className="flex items-center">canceled offer</span>,
+          variant: "success",
+        });
+      },
     });
   };
 
@@ -169,19 +141,21 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
           <span className="font-mono tracking-tighter">{order.value}</span>
         </div>
       </td>
-      <td className="py-2">
+      <td className="py-2 flex justify-end">
         {isMaker && (
           <Button
-            onClick={() => handleCancel(order.hash)}
+            onClick={() => handleCancel(order)}
             variant="pill-secondary"
+            loading={isMining}
           >
             cancel
           </Button>
         )}
         {isOwner && (
           <Button
-            onClick={() => handleAccept(order.hash)}
+            onClick={() => handleAccept(order)}
             variant="pill-secondary"
+            loading={isMining}
           >
             accept
           </Button>
@@ -213,36 +187,40 @@ export default function Name() {
   const router = useRouter();
   const [isOwner, setIsOwner] = useState(false);
   const [status, setStatus] = useState<Status>("redirecting");
+  const { metadataUrl } = useENS();
   const ens = (router.query.name as string) || ""; // has .eth ending
   const ensWithoutTLD = ens ? ens.slice(0, ens.length - 4) : "";
   const isLongEnough = ensWithoutTLD.length >= 3;
   const isValid = isLongEnough && validate(ensWithoutTLD);
+  const ensAddr = useContractAddress("ens");
+  const { apiBase } = useReservoir();
+
   const { data: tokenData, mutate: mutateTokenData } = useGetter(
-    `${getIndexer()}/tokens/details?tokenId=${getTokenIdFromName(
+    `${apiBase}/tokens/details/v4?tokens=${ensAddr}:${getTokenIdFromName(
       ens.slice(0, ens.length - 4),
-    )}&contract=${getContract("ens")}`,
+    )}&sortBy=floorAskPrice&limit=20`,
     status === "ready" && !!ens && !!ensWithoutTLD,
   );
   const { data: ownerData, mutate: mutateOwnerData } = useGetter(
-    `${getIndexer()}/owners?tokenId=${getTokenIdFromName(
+    `${apiBase}/owners/v1?token=${ensAddr}:${getTokenIdFromName(
       ens.slice(0, ens.length - 4),
-    )}&contract=${getContract("ens")}`,
+    )}&offset=0&limit=20`,
     status === "ready" &&
       !!tokenData?.tokens.length &&
       !!ens &&
       !!ensWithoutTLD,
   );
   const { data: buyOrdersData, mutate: mutateBuyOrdersData } = useGetter(
-    `${getIndexer()}/orders?tokenId=${getTokenIdFromName(
+    `${apiBase}/orders/bids/v1?token=${ensAddr}:${getTokenIdFromName(
       ens.slice(0, ens.length - 4),
-    )}&contract=${getContract("ens")}&side=buy&includeInvalid=false`,
+    )}&sortBy=price&limit=50`,
     status === "ready" &&
       !!tokenData?.tokens.length &&
       !!ens &&
       !!ensWithoutTLD,
   );
   const { data: metadata, mutate: mutateMetadata } = useGetter(
-    `${getENSMetadataUrl()}/${getContract("ens")}/${getTokenIdFromName(
+    `${metadataUrl}/${ensAddr}/${getTokenIdFromName(
       ens.slice(0, ens.length - 4),
     )}`,
     status === "ready" &&
@@ -253,10 +231,12 @@ export default function Name() {
 
   // conveniences
   const token = tokenData?.tokens[0];
-  const owner: string | false = isAddress(ownerData?.owners[0].address);
+  const owner = isAddress(ownerData?.owners[0].address);
   const buyOrders = buyOrdersData?.orders || [];
-  const ownerENSName = useENSName(owner || "");
-
+  const { data: ownerENSName } = useEnsName({
+    address: owner || "",
+  });
+  console.log(token);
   useEffect(() => {
     if (!ens) {
       return;
@@ -375,21 +355,21 @@ export default function Name() {
             <p>owned by {simplifyAddress(owner, account, ownerENSName)}</p>
           </div>
 
-          {token?.market?.floorSell?.value &&
-            (token.market.floorSell.validUntil === 0 ||
-              token.market.floorSell.validUntil < Date.now()) && (
+          {token?.market?.floorAsk?.price &&
+            (token.market.floorAsk.validUntil === 0 ||
+              token.market.floorAsk.validUntil < Date.now()) && (
               <div className="flex flex-col items-end">
                 <span className="flex items-center gap-3">
                   <EthIcon className="inline-block w-4" />{" "}
                   <span className="text-4xl font-medium font-mono">
-                    {token.market.floorSell.value}
+                    {token.market.floorAsk.price}
                   </span>
                 </span>
-                {token.market.floorSell.validUntil !== 0 && (
+                {token.market.floorAsk.validUntil !== 0 && (
                   <span className="text-sm text-gray-500">
                     on sale until{" "}
                     {formatDateTimeHuman(
-                      token.market.floorSell.validUntil * 1000,
+                      token.market.floorAsk.validUntil * 1000,
                     )}
                   </span>
                 )}
@@ -400,23 +380,18 @@ export default function Name() {
 
       {token && metadata && (
         <div className="flex flex-col w-full gap-y-2 mt-4">
-          {!active && (
-            <Button fluid onClick={activate}>
-              connect wallet
-            </Button>
-          )}
+          {!active && <ConnectWalletButton />}
 
           {/* IS NOT OWNER: Buy at list price */}
-          {active && !isOwner && token?.market?.floorSell?.value && (
+          {active && !isOwner && token?.market?.floorAsk?.price && (
             <div className="w-full">
               <BuyButton
-                ens={ens}
+                amount={token.market.floorAsk.price}
                 onSuccess={() => {
                   mutateTokenData();
                   mutateMetadata();
                   mutateBuyOrdersData();
                 }}
-                orderHash={token.market.floorSell.hash}
                 tokenId={token.token.tokenId}
               />
             </div>
@@ -436,13 +411,11 @@ export default function Name() {
           )}
 
           {/* IS OWNER: Sell now for best bid */}
-          {active && isOwner && token?.market?.topBuy?.value && (
+          {active && isOwner && token?.market?.topBid?.value && (
             <div className="w-full">
               <SellButton
                 tokenId={token.token.tokenId}
-                ens={ens}
-                orderHash={token.market.topBuy.hash}
-                amount={token.market.topBuy.value}
+                amount={token.market.topBid.value}
                 onSuccess={() => {
                   mutateTokenData();
                   mutateOwnerData();
@@ -459,7 +432,7 @@ export default function Name() {
               <ListButton
                 tokenId={token.token.tokenId}
                 ens={ens}
-                currentPrice={token?.market?.floorSell?.value}
+                currentPrice={token?.market?.floorAsk?.price}
                 onSuccess={() => mutateTokenData()}
               />
             </div>

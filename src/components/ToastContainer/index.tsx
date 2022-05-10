@@ -22,7 +22,7 @@ const ToastContainer = ({ toasts }) => {
 
   return mount
     ? createPortal(
-        <div className="z-50 absolute top-0 right-0">
+        <div className="z-50 absolute top-0 right-0 flex flex-col">
           {transitions((styles, item: ToastData) => (
             <Toast
               id={item.id}

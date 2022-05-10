@@ -1,5 +1,5 @@
 export const ENS_METADATA_URLS = {
-  Localnet: "https://metadata.ens.domains/rinkeby",
+  Localhost: "https://metadata.ens.domains/mainnet",
   Rinkeby: "https://metadata.ens.domains/rinkeby",
-  Mainnet: "https://metadata.ens.domains/mainnet",
+  Ethereum: "https://metadata.ens.domains/mainnet",
 };

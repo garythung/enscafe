@@ -1,17 +1,44 @@
 import { useEffect } from "react";
-import { Web3ReactProvider } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
+import {
+  apiProvider,
+  configureChains,
+  getDefaultWallets,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
+import { chain, createClient, WagmiProvider } from "wagmi";
 
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 
-import Web3ReactManager from "~/components/Web3ReactManager";
 import { ToastProvider } from "~/contexts/ToastContext";
 
 import "~/styles/globals.css";
 import "react-datepicker/dist/react-datepicker.css";
+import "@rainbow-me/rainbowkit/styles.css";
 import WindowHelpers from "~/components/WindowHelpers";
+import { PROVIDERS } from "~/constants";
+
+const { chains, provider } = configureChains(
+  [chain.mainnet, chain.rinkeby],
+  [
+    apiProvider.jsonRpc((c) => ({
+      rpcUrl: PROVIDERS[c.name],
+    })),
+    apiProvider.fallback(),
+  ],
+);
+
+const { connectors } = getDefaultWallets({
+  appName: "ENS cafe",
+  chains,
+});
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+});
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: React.ReactElement) => React.ReactNode;
@@ -20,12 +47,6 @@ type NextPageWithLayout = NextPage & {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
-
-function getLibrary(provider) {
-  const library = new Web3Provider(provider);
-  library.pollingInterval = 12000;
-  return library;
-}
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
@@ -79,8 +100,8 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <Web3ReactManager>
+      <WagmiProvider client={wagmiClient}>
+        <RainbowKitProvider chains={chains}>
           <ToastProvider>
             <WindowHelpers />
             {getLayout(<Component {...pageProps} />)}
@@ -88,8 +109,8 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
             {/* <Component {...pageProps} /> */}
             {/* </div> */}
           </ToastProvider>
-        </Web3ReactManager>
-      </Web3ReactProvider>
+        </RainbowKitProvider>
+      </WagmiProvider>
     </>
   );
 }

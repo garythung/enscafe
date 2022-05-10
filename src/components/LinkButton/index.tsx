@@ -17,7 +17,7 @@ const LinkButton = ({ fluid = false, children, href, ...props }) => {
   }
 
   return (
-    <Link href={href} passHref>
+    <Link passHref href={href}>
       <a {...props} className={classNames.join(" ")}>
         {children}
       </a>

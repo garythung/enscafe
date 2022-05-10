@@ -1,35 +1,35 @@
-export type Contracts =
+export type Contract =
   | "weth"
   | "ens"
   | "ensRegistrar"
-  | "openseaProxyRegistry"
-  | "openseaTokenTransferProxy";
+  | "wyvernProxyRegistry"
+  | "wyvernTokenTransferProxy";
 
-// Localnet addresses match Mainnet, since mainnet forking will likely be used
+// Localhost addresses match mainnet, since mainnet forking will likely be used
 export const CONTRACTS = {
   weth: {
-    Localnet: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-    Rinkeby: "0xc778417e063141139fce010982780140aa0cd5ab",
-    Mainnet: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    Localhost: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    Rinkeby: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
+    Ethereum: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
   },
   ens: {
-    Localnet: "0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85",
-    Rinkeby: "0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85",
-    Mainnet: "0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85",
+    Localhost: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
+    Rinkeby: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
+    Ethereum: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85",
   },
-  openseaProxyRegistry: {
-    Localnet: "0xa5409ec958c83c3f309868babaca7c86dcb077c1",
-    Rinkeby: "0xf57b2c51ded3a29e6891aba85459d600256cf317",
-    Mainnet: "0xa5409ec958c83c3f309868babaca7c86dcb077c1",
+  wyvernProxyRegistry: {
+    Localhost: "0xa5409ec958C83C3f309868babACA7c86DCB077c1",
+    Rinkeby: "0x1E525EEAF261cA41b809884CBDE9DD9E1619573A",
+    Ethereum: "0xa5409ec958C83C3f309868babACA7c86DCB077c1",
   },
-  openseaTokenTransferProxy: {
-    Localnet: "0xe5c783ee536cf5e63e792988335c4255169be4e1",
-    Rinkeby: "0x82d102457854c985221249f86659c9d6cf12aa72",
-    Mainnet: "0xe5c783ee536cf5e63e792988335c4255169be4e1",
+  wyvernTokenTransferProxy: {
+    Localhost: "0xE5c783EE536cf5E63E792988335c4255169be4E1",
+    Rinkeby: "0xCdC9188485316BF6FA416d02B4F680227c50b89e",
+    Ethereum: "0xE5c783EE536cf5E63E792988335c4255169be4E1",
   },
   ensRegistrar: {
-    Localnet: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-    Mainnet: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+    Localhost: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
     Rinkeby: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+    Ethereum: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
   },
 };
