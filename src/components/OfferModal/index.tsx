@@ -6,6 +6,7 @@ import CurrencyInput from "react-currency-input-field";
 import { useSigner } from "wagmi";
 import { placeBid } from "@reservoir0x/client-sdk";
 import * as Yup from "yup";
+import { InformationCircleIcon } from "@heroicons/react/outline";
 
 import Button from "~/components/Button";
 import RadioButton from "~/components/RadioButton";
@@ -284,13 +285,20 @@ export default function OfferModal({
                 </Button>
               )}
               {!wethAllowance.eq(ethers.constants.MaxUint256) && (
-                <Button
-                  variant="primary"
-                  loading={isMining}
-                  onClick={handleWethAllowance}
-                >
-                  let opensea use your WETH
-                </Button>
+                <div className="flex flex-col">
+                  <Button
+                    fluid
+                    variant="primary"
+                    loading={isMining}
+                    onClick={handleWethAllowance}
+                  >
+                    let wyvern use your WETH
+                  </Button>
+                  <span className="flex items-center text-xs mt-1">
+                    <InformationCircleIcon className="h-4 w-4 heroicon-sw-2 mr-1" />
+                    wyvern is opensea's exchange contract
+                  </span>
+                </div>
               )}
             </Form>
           )}

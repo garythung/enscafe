@@ -24,6 +24,7 @@ export default function SellButton({ tokenId, onSuccess, amount }: Props) {
   const { apiBase } = useReservoir();
 
   const onClick = async () => {
+    setIsMining(true);
     await acceptOffer({
       query: {
         token: `${ensAddr}:${tokenId}`,
@@ -35,7 +36,7 @@ export default function SellButton({ tokenId, onSuccess, amount }: Props) {
       handleError: (error) => {
         setIsMining(false);
         addToast({
-          content: <span>something went wrong, try again</span>,
+          content: <span>{error.message}</span>,
           variant: "danger",
         });
       },

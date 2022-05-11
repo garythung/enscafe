@@ -8,6 +8,7 @@ import {
 } from "wagmi";
 
 import { InjectedConnector } from "wagmi/connectors/injected";
+import { isAddress } from "~/utils/addresses";
 
 const useWallet = () => {
   const { data: accountData, error } = useAccount();
@@ -25,7 +26,7 @@ const useWallet = () => {
   });
 
   return {
-    account: accountData?.address,
+    account: isAddress(accountData?.address),
     deactivate: disconnect,
     active: !!accountData,
     error: error,

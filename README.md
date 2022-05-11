@@ -7,8 +7,8 @@
 ## getting started
 
 ```
-yarn install
-yarn dev
+npm install
+npm run dev
 ```
 
 ## tech stack
@@ -20,4 +20,4 @@ yarn dev
 
 ## learn more
 
-https://faq.ens.cafe
+http://faq.ens.cafe

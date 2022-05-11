@@ -14,9 +14,10 @@ const formatter = (pattern: string, d: AllDate) =>
 export const formatDateHuman = (d: AllDate) => formatter("LLLL d, y", d);
 
 // Format date and time to readable
-// Ex: "January 11, 2021 at 5:30 PM"
+// Ex: "Jan 11, 2021 5:30 PM"
 export const formatDateTimeHuman = (d: AllDate) =>
-  formatter("LLLL d, y 'at' p", d);
+  // formatter("LLLL d, y 'at' paaa O", d);
+  formatter("PP paaa O", d);
 
 export const formatCountdown = (days, hours, minutes, seconds) => {
   if (days > 0) {

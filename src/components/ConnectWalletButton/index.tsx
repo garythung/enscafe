@@ -1,3 +1,4 @@
+import { UserCircleIcon, UserIcon } from "@heroicons/react/outline";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import Button from "~/components/Button";
@@ -42,44 +43,68 @@ export default function ConnectWalletButton() {
               }
 
               return (
-                <div style={{ display: "flex", gap: 12 }}>
-                  <Button onClick={openChainModal} variant="secondary">
-                    {chain.hasIcon && (
-                      <div
-                        style={{
-                          background: chain.iconBackground,
-                          width: 16,
-                          height: 16,
-                          borderRadius: 999,
-                          overflow: "hidden",
-                          marginRight: 4,
-                        }}
-                      >
-                        {chain.iconUrl && (
-                          <img
-                            alt={chain.name ?? "Chain icon"}
-                            src={chain.iconUrl}
-                            style={{ width: 16, height: 16 }}
-                          />
-                        )}
-                      </div>
-                    )}
-                    {chain.name.toLowerCase()}
-                  </Button>
+                <>
+                  <div className="flex gap-3 md:hidden">
+                    <Button onClick={openChainModal} variant="secondary-black">
+                      {chain.hasIcon && (
+                        <div
+                          style={{
+                            background: chain.iconBackground,
+                            borderRadius: 999,
+                          }}
+                          className="h-7 w-7 overflow-hidden"
+                        >
+                          {chain.iconUrl && (
+                            <img
+                              alt={chain.name ?? "Chain icon"}
+                              src={chain.iconUrl}
+                              className="h-7 w-7"
+                            />
+                          )}
+                        </div>
+                      )}
+                    </Button>
 
-                  <Button onClick={openAccountModal} variant="primary">
-                    {account.ensName ? (
-                      <span className="font-pressura tracking-tighter font-semibold mr-1">
-                        {account.ensName}
-                      </span>
-                    ) : (
-                      <span className="mr-1">{account.displayName}</span>
-                    )}
-                    {account.displayBalance
-                      ? `(${account.displayBalance})`
-                      : ""}
-                  </Button>
-                </div>
+                    <Button onClick={openAccountModal} variant="secondary">
+                      <UserCircleIcon className="h-7 w-7 heroicon-sw-1" />
+                    </Button>
+                  </div>
+                  <div className="hidden gap-3 md:flex">
+                    <Button onClick={openChainModal} variant="secondary-black">
+                      {chain.hasIcon && (
+                        <div
+                          style={{
+                            background: chain.iconBackground,
+                            borderRadius: 999,
+                          }}
+                          className="h-4 w-4 mr-1.5 overflow-hidden"
+                        >
+                          {chain.iconUrl && (
+                            <img
+                              alt={chain.name ?? "Chain icon"}
+                              src={chain.iconUrl}
+                              className="h-4 w-4"
+                            />
+                          )}
+                        </div>
+                      )}
+                      {chain.name.toLowerCase()}
+                    </Button>
+
+                    <Button onClick={openAccountModal} variant="secondary">
+                      {account.ensName ? (
+                        <span className="font-pressura tracking-tighter font-semibold mr-1">
+                          {account.ensName}
+                        </span>
+                      ) : (
+                        <span className="mr-1">{account.displayName}</span>
+                      )}
+                      {account.displayBalance
+                        ? `(${account.displayBalance})`
+                        : ""}
+                    </Button>
+                  </div>
+                </>
               );
             })()}
           </div>

@@ -15,7 +15,7 @@ export default function Card({ children, color }: Props) {
 
   return (
     <div
-      className="px-4 py-2 rounded-lg w-full h-full"
+      className="px-4 py-2 w-full h-full"
       style={{
         boxShadow,
         border: "2px solid black",

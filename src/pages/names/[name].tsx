@@ -26,6 +26,7 @@ import ConnectWalletButton from "~/components/ConnectWalletButton";
 import { useContractAddress } from "~/hooks/useContractAddress";
 import { useReservoir } from "~/hooks/useReservoir";
 import { useENS } from "~/hooks/useENS";
+import { getMarketIcon } from "~/utils/markets";
 
 type Status = "redirecting" | "ready";
 
@@ -40,7 +41,7 @@ const Container = ({
   ens: string;
   children?: React.ReactNode;
 }) => (
-  <div className="flex flex-col items-center mt-8 md:px-112">
+  <div className="flex flex-col items-center mt-8 md:w-128 md:mx-auto">
     <Head>
       <title key="title">ens cafe | {ens}</title>
       <meta property="og:title" content={ens} />
@@ -350,36 +351,54 @@ export default function Name() {
 
       {/* INFO */}
       {owner && (
-        <div className="flex w-full items-end justify-between mt-4">
-          <div>
-            <p>owned by {simplifyAddress(owner, account, ownerENSName)}</p>
-          </div>
-
-          {token?.market?.floorAsk?.price &&
-            (token.market.floorAsk.validUntil === 0 ||
-              token.market.floorAsk.validUntil < Date.now()) && (
-              <div className="flex flex-col items-end">
-                <span className="flex items-center gap-3">
-                  <EthIcon className="inline-block w-4" />{" "}
-                  <span className="text-4xl font-medium font-mono">
-                    {token.market.floorAsk.price}
-                  </span>
-                </span>
-                {token.market.floorAsk.validUntil !== 0 && (
-                  <span className="text-sm text-gray-500">
-                    on sale until{" "}
-                    {formatDateTimeHuman(
-                      token.market.floorAsk.validUntil * 1000,
-                    )}
-                  </span>
-                )}
-              </div>
-            )}
+        <div className="flex w-full mt-4">
+          <p>owned by {simplifyAddress(owner, account, ownerENSName)}</p>
         </div>
       )}
 
+      {token?.market?.floorAsk?.price &&
+        (token.market.floorAsk.validUntil === 0 ||
+          token.market.floorAsk.validUntil < Date.now()) && (
+          <div className="flex w-full justify-between mt-4">
+            <div className="flex">
+              {token.market.floorAsk.source?.name && (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={
+                    ["OpenSea", "LooksRare"].includes(
+                      token.market.floorAsk.source.name,
+                    )
+                      ? token.market.floorAsk.source.url
+                      : undefined
+                  }
+                >
+                  <img
+                    className="h-8 w-8"
+                    src={getMarketIcon(token.market.floorAsk.source.name)}
+                  />
+                </a>
+              )}
+            </div>
+            <div className="flex flex-col items-end">
+              <span className="flex items-center gap-2">
+                <EthIcon className="inline-block w-4" />{" "}
+                <span className="text-4xl font-bold font-mono tracking-tighter">
+                  {token.market.floorAsk.price}
+                </span>
+              </span>
+              {token.market.floorAsk.validUntil !== 0 && (
+                <span className="text-sm text-gray-500">
+                  on sale until{" "}
+                  {formatDateTimeHuman(token.market.floorAsk.validUntil * 1000)}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
       {token && metadata && (
-        <div className="flex flex-col w-full gap-y-2 mt-4">
+        <div className="flex flex-col w-full gap-y-2 mt-2">
           {!active && <ConnectWalletButton />}
 
           {/* IS NOT OWNER: Buy at list price */}

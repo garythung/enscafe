@@ -18,6 +18,7 @@ import ENSRegistrarABI from "~/abis/ENSRegistrar.json";
 import WyvernProxyRegistryABI from "~/abis/WyvernProxyRegistry.json";
 import { useContractAddress } from "~/hooks/useContractAddress";
 import { useReservoir } from "~/hooks/useReservoir";
+import { InformationCircleIcon } from "@heroicons/react/outline";
 
 type Props = {
   isOpen: boolean;
@@ -166,6 +167,7 @@ export default function ListModal({
           values.customExpiration,
         ).toString(),
         token: `${ensAddr}:${tokenId}`,
+        source: "ens cafe",
       },
       signer,
       apiBase,
@@ -319,23 +321,35 @@ export default function ListModal({
                   </Button>
                 )}
               {userProxy === ethers.constants.AddressZero && (
-                <Button
-                  variant="primary"
-                  loading={isMining}
-                  onClick={handleRegisterProxy}
-                >
-                  register opensea proxy
-                </Button>
-              )}
-              {userProxy !== ethers.constants.AddressZero &&
-                !ensTransfersApproved && (
+                <div className="flex flex-col">
                   <Button
                     variant="primary"
                     loading={isMining}
-                    onClick={handleApproveNFTTransfers}
+                    onClick={handleRegisterProxy}
                   >
-                    let opensea transfer your ens's
+                    register opensea proxy
                   </Button>
+                  <span className="flex items-center text-xs mt-1">
+                    <InformationCircleIcon className="h-4 w-4 heroicon-sw-2 mr-1" />
+                    wyvern is opensea's exchange contract
+                  </span>
+                </div>
+              )}
+              {userProxy !== ethers.constants.AddressZero &&
+                !ensTransfersApproved && (
+                  <div className="flex flex-col">
+                    <Button
+                      variant="primary"
+                      loading={isMining}
+                      onClick={handleApproveNFTTransfers}
+                    >
+                      let wyvern transfer your ens's
+                    </Button>
+                    <span className="flex items-center text-xs mt-1">
+                      <InformationCircleIcon className="h-4 w-4 heroicon-sw-2 mr-1" />
+                      wyvern is opensea's exchange contract
+                    </span>
+                  </div>
                 )}
             </Form>
           )}

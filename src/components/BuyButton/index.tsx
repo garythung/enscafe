@@ -38,6 +38,7 @@ export default function BuyButton({ tokenId, onSuccess, amount }: Props) {
   };
 
   const onClick = async () => {
+    setIsMining(true);
     await buyToken({
       query: {
         token: `${ensAddr}:${tokenId}`,
@@ -49,7 +50,7 @@ export default function BuyButton({ tokenId, onSuccess, amount }: Props) {
       handleError: (error) => {
         setIsMining(false);
         addToast({
-          content: <span>something went wrong, try again</span>,
+          content: <span>{error.message}</span>,
           variant: "danger",
         });
       },

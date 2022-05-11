@@ -11,6 +11,7 @@ interface Props {
     | "gradient"
     | "primary"
     | "secondary"
+    | "secondary-black"
     | "pill"
     | "pill-secondary"
     | "error";
@@ -30,7 +31,7 @@ const LoadingSpinner = ({ loading = false, variant }) => {
   let textColor = "text-white";
   if (variant === "secondary") {
     textColor = "text-cafe-pink";
-  } else if (variant === "pill-secondary") {
+  } else if (["pill-secondary", "secondary-black"].includes(variant)) {
     textColor = "text-black";
   }
 
@@ -89,6 +90,8 @@ const Button = ({
     classNames.push("text-white bg-cafe-pink");
   } else if (variant === "secondary") {
     classNames.push("text-cafe-pink border-1 border-cafe-pink");
+  } else if (variant === "secondary-black") {
+    classNames.push("text-black border-1 border-black");
   } else if (variant === "pill") {
     classNames.push("text-white bg-black");
   } else if (variant === "pill-secondary") {
