@@ -43,7 +43,7 @@ const Container = ({
 }) => (
   <div className="flex flex-col items-center mt-8 md:w-128 md:mx-auto">
     <Head>
-      <title key="title">ens cafe | {ens}</title>
+      <title key="title">{ens}</title>
       <meta property="og:title" content={ens} />
     </Head>
     <WordArt text={ens} />
@@ -398,7 +398,7 @@ export default function Name() {
         )}
 
       {token && metadata && (
-        <div className="flex flex-col w-full gap-y-2 mt-2">
+        <div className="flex flex-col w-full gap-y-2 mt-16">
           {!active && <ConnectWalletButton />}
 
           {/* IS NOT OWNER: Buy at list price */}
