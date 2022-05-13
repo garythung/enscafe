@@ -10,7 +10,9 @@ export default function WordArt({ text, spin }: Props) {
         spin === "x" ? "animate-spin-slow-x" : ""
       } ${spin === "y" ? "animate-spin-slow-y" : ""}`}
     >
-      <span className="text-3xl font-bold font-pressura">{text}</span>
+      <span className="text-3xl font-bold font-pressura tracking-tighter">
+        {text}
+      </span>
     </div>
   );
 }

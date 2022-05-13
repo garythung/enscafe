@@ -20,7 +20,7 @@ const Input = ({ label, helpText, ...props }) => {
       {...field}
       {...props}
       onChange={onChange}
-      className="w-full px-4 border-1 border-black font-pressura text-lg"
+      className="w-full px-4 border-1 border-black font-pressura text-lg pt-1"
     />
   );
 };
