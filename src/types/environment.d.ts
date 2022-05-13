@@ -3,6 +3,7 @@ declare global {
     interface ProcessEnv {
       NEXT_PUBLIC_ETHEREUM_PROVIDER: string;
       NEXT_PUBLIC_RINKEBY_PROVIDER: string;
+      NEXT_PUBLIC_ANALYTICS_WRITE_KEY: string;
       NODE_ENV: "development" | "production";
       PORT?: string;
       PWD: string;

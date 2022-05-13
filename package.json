@@ -1,5 +1,5 @@
 {
-  "name": "ens-cafe",
+  "name": "enscafe",
   "license": "MIT",
   "version": "0.1.0",
   "scripts": {
@@ -16,6 +16,7 @@
     "@heroicons/react": "^1.0.3",
     "@rainbow-me/rainbowkit": "^0.1.0",
     "@reservoir0x/client-sdk": "^0.0.22",
+    "@segment/snippet": "^4.15.3",
     "axios": "^0.27.2",
     "date-fns": "^2.28.0",
     "ethcall": "^4.3.0",

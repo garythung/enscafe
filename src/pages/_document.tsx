@@ -1,4 +1,20 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import * as snippet from "@segment/snippet";
+
+function renderSnippet() {
+  const opts = {
+    apiKey: process.env.NEXT_PUBLIC_ANALYTICS_WRITE_KEY,
+    // note: the page option only covers SSR tracking.
+    // Page.js is used to track other events using `window.analytics.page()`
+    page: true,
+  };
+
+  if (process.env.NODE_ENV === "development") {
+    return snippet.max(opts);
+  }
+
+  return snippet.min(opts);
+}
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -60,6 +76,8 @@ export default class MyDocument extends Document {
               rel="stylesheet"
             />
           </noscript>
+
+          <script dangerouslySetInnerHTML={{ __html: renderSnippet() }} />
         </Head>
         <body>
           <Main />

@@ -20,4 +20,4 @@ npm run dev
 
 ## learn more
 
-http://faq.ens.cafe
+[faq](http://faq.ens.cafe)
