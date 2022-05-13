@@ -20,6 +20,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 import WindowHelpers from "~/components/WindowHelpers";
 import { PROVIDERS } from "~/constants";
 import { useRouter } from "next/router";
+import useWallet from "~/hooks/useWallet";
 
 const SITE_TITLE = "ens cafe";
 const SITE_DESCRIPTION = "the community marketplace for ENS names";
@@ -73,6 +74,7 @@ type AppPropsWithLayout = AppProps & {
 };
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
+  const { account } = useWallet();
   const router = useRouter();
   const [prevPath, setPrevPath] = useState(router.pathname);
 
@@ -90,7 +92,9 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
   // track client-side page loads
   useEffect(() => {
     if (router.pathname !== prevPath) {
-      window.analytics.page();
+      window.analytics.page({
+        userId: account ? account : undefined,
+      });
     }
     setPrevPath(router.pathname);
   }, [router.pathname]);
