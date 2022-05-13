@@ -24,7 +24,9 @@ const Layout = ({ children }) => {
       <div className="grid grid-cols-2 justify-between items-center px-4 py-5 border-b-1 border-black gap-y-2 md:gap-x-16 md:grid-cols-1 md:grid-rows-1 md:grid-cols-header md:px-10 md:py-6 md:h-32 md:border-0">
         <div>
           <Link passHref href="/">
-            <a className="font-semibold text-3xl">ens cafe</a>
+            <a className="font-bold font-pressura tracking-tighter text-3xl">
+              ens cafe
+            </a>
           </Link>
         </div>
         {router.pathname !== "/" && (

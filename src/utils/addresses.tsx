@@ -45,7 +45,7 @@ export const simplifyAddress = (
 
   if (addressENSName) {
     return (
-      <span className="font-pressura tracking-tighter font-semibold">
+      <span className="font-pressura tracking-tighter font-bold">
         <Link passHref href={`/names/${addressENSName}`}>
           <a>{addressENSName}</a>
         </Link>

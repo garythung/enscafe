@@ -334,7 +334,7 @@ export default function Name() {
           <Card>
             <p>
               <span className="mr-3">✋</span>
-              <span className="font-semibold font-pressura">{ens}</span> is not
+              <span className="font-bold font-pressura">{ens}</span> is not
               registered yet. Get it now!
             </p>
           </Card>

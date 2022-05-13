@@ -26,6 +26,7 @@ const SITE_DESCRIPTION = "the community marketplace for ENS names";
 const SITE_ENDPOINT = "https://www.ens.cafe";
 const SITE_DOMAIN = "ens.cafe";
 const SITE_TWITTER = "@ens_cafe";
+const SITE_BANNER = "/banner.png";
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.rinkeby],
@@ -109,8 +110,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         <meta property="og:title" content={SITE_TITLE} />
         <meta property="og:description" content={SITE_DESCRIPTION} />
 
-        {/* TODO: a 1200x630 image here */}
-        <meta property="og:image" content="" />
+        <meta property="og:image" content={SITE_BANNER} />
 
         {/* Twitter Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -120,10 +120,8 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         <meta name="twitter:site" content={SITE_TWITTER} />
         <meta name="twitter:creator" content={SITE_TWITTER} />
         <meta name="twitter:description" content={SITE_DESCRIPTION} />
-        {/* TODO: a 1200x630 image here */}
-        <meta name="twitter:image" content="" />
-        {/* TODO: a 1200x630 image here */}
-        <meta name="twitter:image:src" content="" />
+        <meta name="twitter:image" content={SITE_BANNER} />
+        <meta name="twitter:image:src" content={SITE_BANNER} />
 
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

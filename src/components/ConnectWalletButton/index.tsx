@@ -93,7 +93,7 @@ export default function ConnectWalletButton() {
 
                     <Button onClick={openAccountModal} variant="secondary">
                       {account.ensName ? (
-                        <span className="font-pressura tracking-tighter font-semibold mr-1">
+                        <span className="font-pressura tracking-tighter font-bold mr-1">
                           {account.ensName}
                         </span>
                       ) : (
