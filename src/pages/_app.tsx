@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   apiProvider,
   configureChains,
@@ -19,6 +19,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import WindowHelpers from "~/components/WindowHelpers";
 import { PROVIDERS } from "~/constants";
+import { useRouter } from "next/router";
+
+const SITE_TITLE = "ens cafe";
+const SITE_DESCRIPTION = "the community marketplace for ENS names";
+const SITE_ENDPOINT = "https://www.ens.cafe";
+const SITE_DOMAIN = "ens.cafe";
+const SITE_TWITTER = "@ens_cafe";
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.rinkeby],
@@ -40,7 +47,7 @@ const connectors = connectorsForWallets([
   {
     groupName: "Suggested",
     wallets: [
-      wallet.coinbase({ chains, appName: "ens cafe" }),
+      wallet.coinbase({ chains, appName: SITE_TITLE }),
       wallet.walletConnect({ chains }),
       wallet.rainbow({ chains }),
       wallet.ledger({ chains }),
@@ -66,6 +73,9 @@ type AppPropsWithLayout = AppProps & {
 };
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
+  const router = useRouter();
+  const [prevPath, setPrevPath] = useState(router.pathname);
+
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
       window.ethereum.on("chainChanged", (chainId) => {
@@ -77,37 +87,39 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
     }
   }, []);
 
+  // track client-side page loads
+  useEffect(() => {
+    if (router.pathname !== prevPath) {
+      window.analytics.page();
+    }
+    setPrevPath(router.pathname);
+  }, [router.pathname]);
+
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <>
       <Head>
-        <title>ens cafe</title>
-        <meta name="description" content="the ENS community marketplace"></meta>
+        <title>{SITE_TITLE}</title>
+        <meta name="description" content={SITE_DESCRIPTION}></meta>
 
         {/* Facebook Meta Tags */}
-        <meta property="og:url" content="https://www.ens.cafe" />
+        <meta property="og:url" content={SITE_ENDPOINT} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="ens cafe" />
-        <meta
-          property="og:description"
-          content="the ENS community marketplace"
-        />
+        <meta property="og:title" content={SITE_TITLE} />
+        <meta property="og:description" content={SITE_DESCRIPTION} />
 
         {/* TODO: a 1200x630 image here */}
         <meta property="og:image" content="" />
 
         {/* Twitter Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:domain" content="ens.cafe" />
-        <meta name="twitter:url" content="https://www.ens.cafe" />
-        <meta name="twitter:title" content="ens cafe" />
-        <meta name="twitter:site" content="@ens_cafe" />
-        <meta name="twitter:creator" content="@ens_cafe" />
-        <meta
-          name="twitter:description"
-          content="the ENS community marketplace"
-        />
+        <meta name="twitter:domain" content={SITE_DOMAIN} />
+        <meta name="twitter:url" content={SITE_ENDPOINT} />
+        <meta name="twitter:title" content={SITE_TITLE} />
+        <meta name="twitter:site" content={SITE_TWITTER} />
+        <meta name="twitter:creator" content={SITE_TWITTER} />
+        <meta name="twitter:description" content={SITE_DESCRIPTION} />
         {/* TODO: a 1200x630 image here */}
         <meta name="twitter:image" content="" />
         {/* TODO: a 1200x630 image here */}
