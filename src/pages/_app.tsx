@@ -11,15 +11,16 @@ import { chain, createClient, WagmiProvider } from "wagmi";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
-import { ToastProvider } from "~/contexts/ToastContext";
-
-import "~/styles/globals.css";
 import "react-datepicker/dist/react-datepicker.css";
 import "@rainbow-me/rainbowkit/styles.css";
+import "~/styles/globals.css";
+
+import { ToastProvider } from "~/contexts/ToastContext";
 import WindowHelpers from "~/components/WindowHelpers";
 import { PROVIDERS } from "~/constants";
-import { useRouter } from "next/router";
+import NetworkWarning from "~/components/NetworkWarning";
 
 const SITE_TITLE = "ens cafe";
 const SITE_DESCRIPTION = "the community marketplace for ENS names";
@@ -131,6 +132,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         <RainbowKitProvider chains={chains}>
           <ToastProvider>
             <WindowHelpers />
+            <NetworkWarning />
             {getLayout(<Component {...pageProps} />)}
             {/* <div className="max-w-screen-xl mx-auto"> */}
             {/* <Component {...pageProps} /> */}
