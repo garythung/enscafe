@@ -49,7 +49,7 @@ export default function SellButton({ tokenId, onSuccess, amount }: Props) {
             <span className="flex items-center">
               sold for
               <EthIcon className="inline-block w-2 ml-1 mr-1" />
-              <span className="font-mono tracking-tighter">{amount}</span>!
+              <span className="font-mono">{amount}</span>!
             </span>
           ),
           variant: "success",
@@ -63,7 +63,7 @@ export default function SellButton({ tokenId, onSuccess, amount }: Props) {
       sell now for
       <span className="flex items-center gap-1 ml-1.5">
         <EthIcon className="inline-block w-2" />
-        <span className="font-mono tracking-tighter">{amount}</span>
+        <span className="font-mono">{amount}</span>
       </span>
     </Button>
   );

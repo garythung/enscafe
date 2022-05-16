@@ -187,9 +187,7 @@ export default function ListModal({
             <span className="flex items-center">
               {currentPrice ? "lowered price to" : "listed for"}
               <EthIcon className="inline-block w-2 ml-1 mr-1" />
-              <span className="font-mono tracking-tighter">
-                {values.amount}
-              </span>
+              <span className="font-mono">{values.amount}</span>
             </span>
           ),
           variant: "success",

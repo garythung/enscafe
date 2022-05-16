@@ -152,9 +152,7 @@ export default function OfferModal({
             <span className="flex items-center">
               offered
               <EthIcon className="inline-block w-2 ml-1 mr-1" />
-              <span className="font-mono tracking-tighter">
-                {values.amount}
-              </span>
+              <span className="font-mono">{values.amount}</span>
             </span>
           ),
           variant: "success",

@@ -89,7 +89,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
             <span className="flex items-center">
               sold for
               <EthIcon className="inline-block w-2 ml-1 mr-1" />
-              <span className="font-mono tracking-tighter">{order.price}</span>!
+              <span className="font-mono">{order.price}</span>!
             </span>
           ),
           variant: "success",
@@ -139,7 +139,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
       <td className="py-2">
         <div className="flex items-center gap-x-1">
           <EthIcon className="inline-block w-2" />{" "}
-          <span className="font-mono tracking-tighter">{order.value}</span>
+          <span className="font-mono">{order.value}</span>
         </div>
       </td>
       <td className="py-2 flex justify-end">
@@ -383,7 +383,7 @@ export default function Name() {
             <div className="flex flex-col items-end">
               <span className="flex items-center gap-2">
                 <EthIcon className="inline-block w-4" />{" "}
-                <span className="text-4xl font-bold font-mono tracking-tighter">
+                <span className="text-4xl font-bold font-mono">
                   {token.market.floorAsk.price}
                 </span>
               </span>

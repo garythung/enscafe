@@ -30,7 +30,7 @@ export default function BuyButton({ tokenId, onSuccess, amount }: Props) {
         <span className="flex items-center">
           bought for bought for bought for bought for
           <EthIcon className="inline-block w-2 ml-1 mr-1" />
-          <span className="font-mono tracking-tighter">1</span>!
+          <span className="font-mono">1</span>!
         </span>
       ),
       variant: "success",
@@ -63,7 +63,7 @@ export default function BuyButton({ tokenId, onSuccess, amount }: Props) {
             <span className="flex items-center">
               bought for
               <EthIcon className="inline-block w-2 ml-1 mr-1" />
-              <span className="font-mono tracking-tighter">{amount}</span>!
+              <span className="font-mono">{amount}</span>!
             </span>
           ),
           variant: "success",
