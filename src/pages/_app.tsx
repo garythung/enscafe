@@ -111,7 +111,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         <meta property="og:title" content={SITE_TITLE} />
         <meta property="og:description" content={SITE_DESCRIPTION} />
 
-        <meta property="og:image" content={SITE_BANNER} />
+        <meta property="og:image" content={SITE_ENDPOINT + SITE_BANNER} />
 
         {/* Twitter Meta Tags */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -121,8 +121,8 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         <meta name="twitter:site" content={SITE_TWITTER} />
         <meta name="twitter:creator" content={SITE_TWITTER} />
         <meta name="twitter:description" content={SITE_DESCRIPTION} />
-        <meta name="twitter:image" content={SITE_BANNER} />
-        <meta name="twitter:image:src" content={SITE_BANNER} />
+        <meta name="twitter:image" content={SITE_ENDPOINT + SITE_BANNER} />
+        <meta name="twitter:image:src" content={SITE_ENDPOINT + SITE_BANNER} />
 
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
