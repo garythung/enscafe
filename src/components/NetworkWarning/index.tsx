@@ -10,7 +10,7 @@ const NetworkWarning = () => {
   }
 
   return (
-    <p className="bg-cafe-orange text-black text-sm text-center py-1.5 w-full">
+    <p className="sticky top-0 bg-gradient-pink text-black text-sm text-center py-1.5 w-full">
       fyi, you're on {activeChain.name} testnet
     </p>
   );

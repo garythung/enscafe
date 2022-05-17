@@ -1,20 +1,18 @@
-const BASE_CLASSNAMES = [
-  "rounded-full",
-  "flex",
-  "justify-center",
-  "items-center",
-  "tracking-tight",
-];
+type Variant =
+  | "gradient"
+  | "gradient-secondary"
+  | "primary"
+  | "secondary"
+  | "secondary-black"
+  | "pill"
+  | "pill-secondary"
+  | "destructive"
+  | "destructive-secondary"
+  | "error";
 
 interface Props {
-  variant?:
-    | "gradient"
-    | "primary"
-    | "secondary"
-    | "secondary-black"
-    | "pill"
-    | "pill-secondary"
-    | "error";
+  variant?: Variant;
+  size?: "sm" | "md";
   fluid?: boolean;
   onClick?(event: React.MouseEvent<HTMLButtonElement>): void;
   children: React.ReactNode;
@@ -23,20 +21,29 @@ interface Props {
   type?: "button" | "submit" | "reset";
 }
 
-const LoadingSpinner = ({ loading = false, variant }) => {
+type LoadingProps = {
+  size: "sm" | "md";
+  loading: boolean;
+  variant: Variant;
+};
+const LoadingSpinner = ({
+  size = "md",
+  loading = false,
+  variant,
+}: LoadingProps) => {
   if (!loading) {
     return null;
   }
 
   let textColor = "text-white";
   if (variant === "secondary") {
-    textColor = "text-cafe-pink";
+    textColor = "text-gray-500";
   } else if (["pill-secondary", "secondary-black"].includes(variant)) {
     textColor = "text-black";
   }
 
   let sizing = "mr-3 h-5 w-5";
-  if (["pill", "pill-secondary"].includes(variant)) {
+  if (size === "sm") {
     sizing = "mr-1 h-3.5 w-3.5";
   }
 
@@ -64,8 +71,18 @@ const LoadingSpinner = ({ loading = false, variant }) => {
   );
 };
 
+const BASE_CLASSNAMES = [
+  "rounded-full",
+  "flex",
+  "justify-center",
+  "items-center",
+  "tracking-tight",
+  "text-md",
+];
+
 const Button = ({
   variant = "gradient",
+  size = "md",
   fluid = false,
   onClick,
   children,
@@ -85,25 +102,40 @@ const Button = ({
   }
 
   if (variant === "gradient") {
-    classNames.push("text-white bg-gradient");
+    classNames.push("text-black bg-gradient");
+  } else if (variant === "gradient-secondary") {
+    classNames.push("text-black bg-gradient-pink");
   } else if (variant === "primary") {
-    classNames.push("text-white bg-cafe-pink");
+    classNames.push("text-white bg-gray-500");
+    classNames.push(
+      "transition ease-out duration-150 hover:font-medium hover:drop-shadow-lg",
+    );
   } else if (variant === "secondary") {
-    classNames.push("text-cafe-pink border-1 border-cafe-pink");
+    classNames.push("text-gray-700 border-1 border-gray-700");
   } else if (variant === "secondary-black") {
     classNames.push("text-black border-1 border-black");
   } else if (variant === "pill") {
     classNames.push("text-white bg-black");
   } else if (variant === "pill-secondary") {
     classNames.push("text-black bg-white border-1 border-black");
+    classNames.push(
+      "transition ease-out duration-150 hover:bg-black hover:text-white",
+    );
+  } else if (variant === "destructive") {
+    classNames.push("text-white bg-cafe-pink");
+  } else if (variant === "destructive-secondary") {
+    classNames.push("text-cafe-pink bg-white border-1 border-cafe-pink");
+    classNames.push(
+      "transition ease-out duration-150 hover:bg-cafe-pink hover:text-white",
+    );
   } else if (variant === "error") {
     classNames.push("text-white bg-red-500 font-bold");
   }
 
-  if (["pill", "pill-secondary"].includes(variant)) {
+  if (size === "sm") {
     classNames.push("py-0.5 px-3 text-sm");
-  } else {
-    classNames.push("py-3 px-6 font-medium");
+  } else if (size === "md") {
+    classNames.push("py-3 px-6");
   }
 
   return (
@@ -114,7 +146,7 @@ const Button = ({
       onClick={onClick}
       className={classNames.join(" ")}
     >
-      <LoadingSpinner loading={loading} variant={variant} />
+      <LoadingSpinner size={size} loading={loading} variant={variant} />
       {children}
     </button>
   );

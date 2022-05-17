@@ -139,9 +139,9 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
       <td className="py-2">{simplifyAddress(order.maker, account, ensName)}</td>
       <td
         className="py-2"
-        title={hasExpiration ? validUntilDate.toLocaleString() : undefined}
+        title={hasExpiration ? validUntilDate.toString() : undefined}
       >
-        {hasExpiration && validUntilDate.toLocaleDateString()}
+        {hasExpiration && validUntilDate.toLocaleString()}
       </td>
       <td className="py-2">
         <div className="flex items-center gap-x-1">
@@ -153,7 +153,8 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
         {isMaker && (
           <Button
             onClick={() => handleCancel(order)}
-            variant="pill-secondary"
+            variant="destructive-secondary"
+            size="sm"
             loading={isMining}
           >
             cancel
@@ -163,6 +164,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
           <Button
             onClick={() => handleAccept(order)}
             variant="pill-secondary"
+            size="sm"
             loading={isMining}
           >
             accept
@@ -431,7 +433,12 @@ export default function Name() {
                 </span>
               </span>
               {token.market.floorAsk.validUntil !== 0 && (
-                <span className="text-sm text-gray-500">
+                <span
+                  className="text-sm text-gray-500"
+                  title={new Date(
+                    token.market.floorAsk.validUntil * 1000,
+                  ).toString()}
+                >
                   on sale until{" "}
                   {formatDateTimeHuman(token.market.floorAsk.validUntil * 1000)}
                 </span>
@@ -490,24 +497,24 @@ export default function Name() {
 
           {/* IS OWNER: List for sale */}
           {active && isOwner && (
-            <div className="w-full flex flex-row gap-2">
-              {token?.market?.floorAsk?.id && (
-                <Button
-                  fluid
-                  variant="secondary"
-                  onClick={handleCancel}
-                  loading={isMining}
-                >
-                  cancel listing
-                </Button>
-              )}
+            <>
               <ListButton
                 tokenId={token.token.tokenId}
                 ens={ens}
                 currentPrice={token?.market?.floorAsk?.price}
                 onSuccess={() => mutateTokenData()}
               />
-            </div>
+              {token?.market?.floorAsk?.id && (
+                <Button
+                  fluid
+                  variant="destructive-secondary"
+                  onClick={handleCancel}
+                  loading={isMining}
+                >
+                  cancel listing
+                </Button>
+              )}
+            </>
           )}
         </div>
       )}

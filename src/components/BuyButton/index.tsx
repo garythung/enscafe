@@ -23,20 +23,6 @@ export default function BuyButton({ tokenId, onSuccess, amount }: Props) {
   const ensAddr = useContractAddress("ens");
   const { apiBase } = useReservoir();
 
-  const test = () => {
-    addTxMiningToast("abc");
-    addToast({
-      content: (
-        <span className="flex items-center">
-          bought for bought for bought for bought for
-          <EthIcon className="inline-block w-2 ml-1 mr-1" />
-          <span className="font-mono">1</span>!
-        </span>
-      ),
-      variant: "success",
-    });
-  };
-
   const onClick = async () => {
     setIsMining(true);
     await buyToken({
@@ -76,11 +62,8 @@ export default function BuyButton({ tokenId, onSuccess, amount }: Props) {
   };
 
   return (
-    <>
-      {/* <button onClick={test}>test</button> */}
-      <Button fluid variant="primary" onClick={onClick} loading={isMining}>
-        buy now
-      </Button>
-    </>
+    <Button fluid variant="primary" onClick={onClick} loading={isMining}>
+      buy now
+    </Button>
   );
 }

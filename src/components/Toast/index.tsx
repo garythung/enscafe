@@ -44,7 +44,7 @@ const Toast = ({
 
   return (
     <animated.div
-      className="mr-8 mt-4 relative px-6 py-4 border-1 border-black bg-white ml-auto rounded-lg"
+      className="mr-8 mt-4 relative px-6 py-4 border-1 border-black bg-white ml-auto rounded-lg transition ease-in-out hover:scale-105 duration-150"
       style={{ boxShadow, ...style }}
     >
       <button

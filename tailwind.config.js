@@ -30,6 +30,7 @@ module.exports = {
       },
       backgroundImage: {
         gradient: "linear-gradient(92.93deg, #BBCAFF 0%, #C9FFBB 100%)",
+        "gradient-pink": "linear-gradient(225deg, #FFB96E 0%, #FF706E 100%)",
       },
       padding: {
         112: "28rem",
@@ -50,8 +51,8 @@ module.exports = {
         "primary-blue": "#3E6CE3",
         "accent-blue": "#0066FF",
         "cafe-blue": "#6EFDFF",
-        "cafe-green": "#B4FF6E",
-        "cafe-purple": "#706EFF",
+        "cafe-green": "#44F66E",
+        "cafe-purple": "#6E70FF",
         "cafe-orange": "#FFB96E",
         "cafe-pink": "#FF706E",
         seafoam: "#F4FCFE",

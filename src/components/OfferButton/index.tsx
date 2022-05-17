@@ -24,7 +24,7 @@ export default function OfferButton({ tokenId, ens, onSuccess }: Props) {
         ens={ens}
         onSuccess={onSuccess}
       />
-      <Button fluid variant="secondary" onClick={onClick}>
+      <Button fluid variant="pill-secondary" onClick={onClick}>
         send offer
       </Button>
     </>

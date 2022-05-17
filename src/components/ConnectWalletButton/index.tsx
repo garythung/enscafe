@@ -65,7 +65,10 @@ export default function ConnectWalletButton() {
                       )}
                     </Button>
 
-                    <Button onClick={openAccountModal} variant="secondary">
+                    <Button
+                      onClick={openAccountModal}
+                      variant="gradient-secondary"
+                    >
                       <UserCircleIcon className="h-7 w-7 heroicon-sw-1" />
                     </Button>
                   </div>
@@ -91,7 +94,10 @@ export default function ConnectWalletButton() {
                       {chain.name.toLowerCase()}
                     </Button>
 
-                    <Button onClick={openAccountModal} variant="secondary">
+                    <Button
+                      onClick={openAccountModal}
+                      variant="gradient-secondary"
+                    >
                       {account.ensName ? (
                         <span className="font-pressura tracking-tighter font-bold mr-1">
                           {account.ensName}
