@@ -1,8 +1,9 @@
-# ens cafe
+![ens cafe](https://ens.cafe/banner.png)
 
 > the community marketplace for ENS names
 
 [ens cafe](https://ens.cafe) is a marketplace built specifically for [ENS](https://ens.domains) names.
+
 
 ## getting started
 
