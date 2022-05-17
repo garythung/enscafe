@@ -69,7 +69,7 @@ export default function BuyButton({ tokenId, onSuccess, amount }: Props) {
           variant: "success",
         });
       },
-      setTxHash: (hash) => {
+      handleTxHash: (hash) => {
         addTxMiningToast(hash);
       },
     });

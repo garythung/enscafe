@@ -55,7 +55,7 @@ export default function SellButton({ tokenId, onSuccess, amount }: Props) {
           variant: "success",
         });
       },
-      setTxHash: (hash) => {
+      handleTxHash: (hash) => {
         addTxMiningToast(hash);
       },
     });
@@ -63,7 +63,7 @@ export default function SellButton({ tokenId, onSuccess, amount }: Props) {
 
   return (
     <Button fluid variant="primary" onClick={onClick} loading={isMining}>
-      sell now for
+      sell for
       <span className="flex items-center gap-1 ml-1.5">
         <EthIcon className="inline-block w-2" />
         <span className="font-mono">{amount}</span>

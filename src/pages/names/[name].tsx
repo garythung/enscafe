@@ -65,7 +65,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
 
   const handleAccept = async (order: any) => {
     setIsMining(true);
-    console.log(acceptOffer);
+
     await acceptOffer({
       query: {
         token: order.tokenSetId.replace("token:", ""),
@@ -96,7 +96,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
           variant: "success",
         });
       },
-      setTxHash: (hash) => {
+      handleTxHash: (hash) => {
         addTxMiningToast(hash);
       },
     });
@@ -128,7 +128,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
           variant: "success",
         });
       },
-      setTxHash: (hash) => {
+      handleTxHash: (hash) => {
         addTxMiningToast(hash);
       },
     });
@@ -275,7 +275,7 @@ export default function Name() {
           variant: "success",
         });
       },
-      setTxHash: (hash) => {
+      handleTxHash: (hash) => {
         addTxMiningToast(hash);
       },
     });
@@ -441,7 +441,7 @@ export default function Name() {
         )}
 
       {token && metadata && (
-        <div className="flex flex-col w-full gap-y-2 mt-16">
+        <div className="flex flex-col w-full gap-y-2 mt-8">
           {!active && <ConnectWalletButton />}
 
           {/* IS NOT OWNER: Buy at list price */}
@@ -472,7 +472,7 @@ export default function Name() {
             </div>
           )}
 
-          {/* IS OWNER: Sell now for best bid */}
+          {/* IS OWNER: Sell for best bid */}
           {active && isOwner && token?.market?.topBid?.id && (
             <div className="w-full">
               <SellButton
@@ -492,7 +492,12 @@ export default function Name() {
           {active && isOwner && (
             <div className="w-full flex flex-row gap-2">
               {token?.market?.floorAsk?.id && (
-                <Button fluid variant="secondary" onClick={handleCancel}>
+                <Button
+                  fluid
+                  variant="secondary"
+                  onClick={handleCancel}
+                  loading={isMining}
+                >
                   cancel listing
                 </Button>
               )}
