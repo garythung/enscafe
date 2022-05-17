@@ -17,7 +17,7 @@ type Props = {
 
 export default function SellButton({ tokenId, onSuccess, amount }: Props) {
   const { account } = useWallet();
-  const { addToast } = useToast();
+  const { addToast, addTxMiningToast } = useToast();
   const [isMining, setIsMining] = useState(false);
   const { data: signer } = useSigner();
   const ensAddr = useContractAddress("ens");
@@ -54,6 +54,9 @@ export default function SellButton({ tokenId, onSuccess, amount }: Props) {
           ),
           variant: "success",
         });
+      },
+      setTxHash: (hash) => {
+        addTxMiningToast(hash);
       },
     });
   };

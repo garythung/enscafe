@@ -31,7 +31,7 @@ export default function ListButton({
         currentPrice={currentPrice}
         onSuccess={onSuccess}
       />
-      <Button fluid variant="secondary" onClick={onClick}>
+      <Button fluid variant="primary" onClick={onClick}>
         {currentPrice ? "lower price" : "list for sale"}
       </Button>
     </>

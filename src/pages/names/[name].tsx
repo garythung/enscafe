@@ -53,7 +53,7 @@ const Container = ({
 
 const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
   const { account, active } = useWallet();
-  const { addToast } = useToast();
+  const { addToast, addTxMiningToast } = useToast();
   const { data: ensName } = useEnsName({ address: order.maker || "" });
   const isMaker = active && account && account === isAddress(order.maker);
   const isOwner = active && account && account === isAddress(owner);
@@ -65,6 +65,7 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
 
   const handleAccept = async (order: any) => {
     setIsMining(true);
+    console.log(acceptOffer);
     await acceptOffer({
       query: {
         token: order.tokenSetId.replace("token:", ""),
@@ -95,6 +96,9 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
           variant: "success",
         });
       },
+      setTxHash: (hash) => {
+        addTxMiningToast(hash);
+      },
     });
   };
 
@@ -123,6 +127,9 @@ const Offer = ({ order, owner, onAcceptSuccess, onCancelSuccess }) => {
           content: <span className="flex items-center">canceled offer</span>,
           variant: "success",
         });
+      },
+      setTxHash: (hash) => {
+        addTxMiningToast(hash);
       },
     });
   };
@@ -185,6 +192,7 @@ const getExpiration = (metadata: any): number => {
 
 export default function Name() {
   const { account, active } = useWallet();
+  const { addToast, addTxMiningToast } = useToast();
   const router = useRouter();
   const [isOwner, setIsOwner] = useState(false);
   const [status, setStatus] = useState<Status>("redirecting");
@@ -195,6 +203,7 @@ export default function Name() {
   const isValid = isLongEnough && validate(ensWithoutTLD);
   const ensAddr = useContractAddress("ens");
   const { apiBase } = useReservoir();
+  const [isMining, setIsMining] = useState(false);
 
   const { data: tokenData, mutate: mutateTokenData } = useGetter(
     `${apiBase}/tokens/details/v4?tokens=${ensAddr}:${getTokenIdFromName(
@@ -237,6 +246,40 @@ export default function Name() {
   const { data: ownerENSName } = useEnsName({
     address: owner || "",
   });
+  const { data: signer } = useSigner();
+
+  const handleCancel = async () => {
+    setIsMining(true);
+    await cancelOrder({
+      query: {
+        id: token.market.floorAsk.id,
+        maker: account,
+      },
+      signer,
+      apiBase,
+      setState: () => {},
+      handleError: (error) => {
+        setIsMining(false);
+        addToast({
+          content: <span>{error.message}</span>,
+          variant: "danger",
+        });
+      },
+      handleSuccess: () => {
+        setIsMining(false);
+        mutateTokenData();
+        mutateBuyOrdersData();
+
+        addToast({
+          content: <span className="flex items-center">canceled listing</span>,
+          variant: "success",
+        });
+      },
+      setTxHash: (hash) => {
+        addTxMiningToast(hash);
+      },
+    });
+  };
 
   useEffect(() => {
     if (!ens) {
@@ -356,7 +399,7 @@ export default function Name() {
         </div>
       )}
 
-      {token?.market?.floorAsk?.price &&
+      {token?.market?.floorAsk?.id &&
         (token.market.floorAsk.validUntil === 0 ||
           token.market.floorAsk.validUntil < Date.now()) && (
           <div className="flex w-full justify-between mt-4">
@@ -402,7 +445,7 @@ export default function Name() {
           {!active && <ConnectWalletButton />}
 
           {/* IS NOT OWNER: Buy at list price */}
-          {active && !isOwner && token?.market?.floorAsk?.price && (
+          {active && !isOwner && token?.market?.floorAsk?.id && (
             <div className="w-full">
               <BuyButton
                 amount={token.market.floorAsk.price}
@@ -430,7 +473,7 @@ export default function Name() {
           )}
 
           {/* IS OWNER: Sell now for best bid */}
-          {active && isOwner && token?.market?.topBid?.value && (
+          {active && isOwner && token?.market?.topBid?.id && (
             <div className="w-full">
               <SellButton
                 tokenId={token.token.tokenId}
@@ -447,7 +490,12 @@ export default function Name() {
 
           {/* IS OWNER: List for sale */}
           {active && isOwner && (
-            <div className="w-full">
+            <div className="w-full flex flex-row gap-2">
+              {token?.market?.floorAsk?.id && (
+                <Button fluid variant="secondary" onClick={handleCancel}>
+                  cancel listing
+                </Button>
+              )}
               <ListButton
                 tokenId={token.token.tokenId}
                 ens={ens}

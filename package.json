@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@ensdomains/ens-validation": "^0.1.0",
@@ -44,6 +45,7 @@
     "eslint-config-next": "11.0.1",
     "eslint-config-prettier": "^8.3.0",
     "husky": "^7.0.4",
+    "patch-package": "^6.4.7",
     "postcss": "^8.3.6",
     "prettier": "^2.3.2",
     "sass": "^1.36.0",

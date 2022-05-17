@@ -3,12 +3,10 @@ import React, { useEffect } from "react";
 import { useToast } from "~/contexts/ToastContext";
 
 export default function WindowHelpers() {
-  const { addToast } = useToast();
+  const toast = useToast();
 
   useEffect(() => {
-    window.toast = {
-      add: addToast,
-    };
+    window.toast = toast;
   }, []);
 
   return <></>;
