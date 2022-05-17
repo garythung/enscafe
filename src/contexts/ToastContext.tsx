@@ -21,7 +21,7 @@ export type ToastData = ToastInputData & {
 
 const ToastContext = React.createContext<ToastContextType>(null);
 
-let id = 1;
+let id: number = 1;
 
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState<ToastData[]>([]);
@@ -70,7 +70,7 @@ export const ToastProvider = ({ children }) => {
   );
 
   const removeToast = useCallback(
-    (id) => {
+    (id: number) => {
       setToasts((toasts) => toasts.filter((t) => t.id !== id));
     },
     [setToasts],
