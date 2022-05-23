@@ -111,20 +111,20 @@ const Button = ({
       "transition ease-out duration-150 hover:font-medium hover:drop-shadow-lg",
     );
   } else if (variant === "secondary") {
-    classNames.push("text-gray-700 border-1 border-gray-700");
+    classNames.push("text-gray-700 border border-gray-700");
   } else if (variant === "secondary-black") {
-    classNames.push("text-black border-1 border-black");
+    classNames.push("text-black border border-black");
   } else if (variant === "pill") {
     classNames.push("text-white bg-black");
   } else if (variant === "pill-secondary") {
-    classNames.push("text-black bg-white border-1 border-black");
+    classNames.push("text-black bg-white border border-black");
     classNames.push(
       "transition ease-out duration-150 hover:bg-black hover:text-white",
     );
   } else if (variant === "destructive") {
     classNames.push("text-white bg-cafe-pink");
   } else if (variant === "destructive-secondary") {
-    classNames.push("text-cafe-pink bg-white border-1 border-cafe-pink");
+    classNames.push("text-cafe-pink bg-white border border-cafe-pink");
     classNames.push(
       "transition ease-out duration-150 hover:bg-cafe-pink hover:text-white",
     );

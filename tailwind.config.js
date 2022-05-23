@@ -38,9 +38,6 @@ module.exports = {
         144: "36rem",
         full: "100%",
       },
-      borderWidth: {
-        1: "1px",
-      },
       fontFamily: {
         ...fontFamily,
         sans: ['"DM Sans"', ...fontFamily.sans],
@@ -129,9 +126,6 @@ module.exports = {
         112: "28rem",
         128: "32rem",
         144: "36rem",
-      },
-      boxShadow: {
-        card: "0px 0px 1px rgba(0, 0, 0, 0.08), 0px 12px 32px rgba(0, 0, 0, 0.12)",
       },
     },
   },

@@ -50,7 +50,7 @@ export default function RadioButton({
   if (checked) {
     classNames.push("text-white bg-black");
   } else {
-    classNames.push("bg-white border-1 border-black text-black");
+    classNames.push("bg-white border border-black text-black");
   }
 
   return (

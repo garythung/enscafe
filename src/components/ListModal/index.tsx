@@ -218,7 +218,7 @@ export default function ListModal({
           {({ errors, setFieldError, values, setFieldValue }) => (
             <Form className="w-full flex flex-col self-center h-4/5 px-6 pt-12 pb-8 gap-y-4">
               <h1 className="text-3xl font-bold font-pressura">{ens}</h1>
-              <div className="flex flex-col border-1 border-black py-2.5 px-3 gap-y-2.5">
+              <div className="flex flex-col border border-black py-2.5 px-3 gap-y-2.5">
                 <label
                   className={`text-sm text-gray-500 font-medium ${
                     errors.amount ? "text-red-500" : ""
@@ -247,7 +247,7 @@ export default function ListModal({
                   />
                 </div>
               </div>
-              <div className="flex flex-col border-1 border-black py-2.5 px-3 gap-y-2.5">
+              <div className="flex flex-col border border-black py-2.5 px-3 gap-y-2.5">
                 <label
                   className={`text-sm text-gray-500 font-medium ${
                     errors.expiration ? "text-red-500" : ""
